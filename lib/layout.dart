@@ -22,6 +22,7 @@ class Layout {
         title: Center(
           child: Text('ThizerList'),
         ),
+        actions: _getActions(context),
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: currItem,
@@ -40,8 +41,79 @@ class Layout {
     );
   }
 
+  static List<Widget> _getActions(context) {
+    List<Widget> items = List<Widget>();
+
+    // Fora da pagina home nao mostra acao alguma
+    if (pages[currItem] != HomePage.tag) {
+      return items;
+    }
+
+    TextEditingController _c = TextEditingController();
+
+    items.add(
+      GestureDetector(
+        onTap: () {
+
+          showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (BuildContext ctx) {
+
+              final input = TextFormField(
+                controller: _c,
+                decoration: InputDecoration(
+                  hintText: 'Nome',
+                  contentPadding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(5)
+                  )
+                ),
+              );
+
+              return AlertDialog(
+                title: Text('Nova Lista'),
+                content: SingleChildScrollView(
+                  child: ListBody(
+                    children: <Widget>[
+                      input
+                    ],
+                  ),
+                ),
+                actions: <Widget>[
+                  RaisedButton(
+                    color: secondary(),
+                    child: Text('Cancelar', style: TextStyle(color: Layout.light())),
+                    onPressed: () {
+                      Navigator.of(ctx).pop();
+                    },
+                  ),
+                  RaisedButton(
+                    color: primary(),
+                    child: Text('Adicionar', style: TextStyle(color: Layout.light())),
+                    onPressed: () {
+                      
+                      print(_c.text);
+
+                      Navigator.of(ctx).pop();
+                    },
+                  )
+                ],
+              );
+            }
+          );
+        },
+        child: Icon(Icons.add),
+      )
+    );
+
+    items.add(Padding(padding: EdgeInsets.only(right: 20)));
+
+    return items;
+  }
+
   static Color primary([double opacity = 1]) => Color.fromRGBO(62, 63, 89, opacity);
-  static Color secondary([double opacity = 1]) => Color.fromRGBO(111, 168, 191, opacity);
+  static Color secondary([double opacity = 1]) => Color.fromRGBO(150, 150, 150, opacity);
   static Color light([double opacity = 1]) => Color.fromRGBO(242, 234, 228, opacity);
   static Color dark([double opacity = 1]) => Color.fromRGBO(51, 51, 51, opacity);
 
