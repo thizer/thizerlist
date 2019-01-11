@@ -14,24 +14,18 @@ class _HomeListState extends State<HomeList> {
   @override
   Widget build(BuildContext context) {
 
-    HomeList.items.add(ListTile(
-      leading: Icon(Icons.pages),
-      title: Text('Item 1'),
-      trailing: Icon(Icons.settings_applications),
-    ));
-
-    Timer.periodic(Duration(seconds: 5), (a) {
-
-      // print(HomeList.items.length);
-
-      setState(() {
-
-      });
-    });
+    List<Widget> values = List<Widget>();
+    if (HomeList.items.length == 0) {
+      values.add(ListTile(
+        leading: Icon(Icons.pages),
+        title: Text('Nenhuma lista ainda'),
+        trailing: Icon(Icons.more_vert),
+      ));
+    }
 
     return ListView(
       shrinkWrap: true,
-      children: HomeList.items
+      children: (HomeList.items.length == 0) ? values : HomeList.items
     );
   }
 }

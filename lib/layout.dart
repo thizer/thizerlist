@@ -43,7 +43,8 @@ class Layout {
     );
   }
 
-  static List<Widget> _getActions(context) {
+  static List<Widget> _getActions(BuildContext context) {
+
     List<Widget> items = List<Widget>();
 
     // Fora da pagina home nao mostra acao alguma
@@ -99,13 +100,11 @@ class Layout {
                         ListTile(
                           leading: Icon(Icons.pages),
                           title: Text(_c.text),
-                          trailing: Icon(Icons.settings_applications),
+                          trailing: Icon(Icons.more_vert),
                         )
                       );
 
-                      print(_c.text);
-
-                      Navigator.of(ctx).pop();
+                      Navigator.of(ctx).popAndPushNamed(HomePage.tag);
                     },
                   )
                 ],
