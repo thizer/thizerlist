@@ -4,6 +4,8 @@ import 'pages/home.dart';
 import 'pages/about.dart';
 import 'pages/settings.dart';
 
+import 'widgets/HomeList.dart';
+
 class Layout {
 
   static final pages = [
@@ -93,6 +95,14 @@ class Layout {
                     child: Text('Adicionar', style: TextStyle(color: Layout.light())),
                     onPressed: () {
                       
+                      HomeList.items.add(
+                        ListTile(
+                          leading: Icon(Icons.pages),
+                          title: Text(_c.text),
+                          trailing: Icon(Icons.settings_applications),
+                        )
+                      );
+
                       print(_c.text);
 
                       Navigator.of(ctx).pop();

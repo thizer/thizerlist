@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:thizerlist/layout.dart';
 
-import 'about.dart';
+import '../widgets/HomeList.dart';
 
 class HomePage extends StatelessWidget {
 
@@ -10,19 +10,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context){
 
-    final content = Center(
-      child: Column(
-        children: <Widget>[
-          Text('Hello World'),
-          RaisedButton(
-            child: Text('Sobre'),
-            onPressed: () {
-              Navigator.of(context).pushNamed(AboutPage.tag);
-            },
-          )
-        ],
-      )
-    );
+    final content = HomeList();
 
     return Layout.getContent(context, content);
   }
