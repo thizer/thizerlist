@@ -1,4 +1,4 @@
-package com.example.thizerlist;
+package br.com.thizer.thizerlist;
 
 import android.os.Bundle;
 import io.flutter.app.FlutterActivity;
