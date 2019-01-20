@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'pages/home.dart';
 import 'pages/about.dart';
 import 'pages/settings.dart';
+import 'pages/list.dart';
 
 import 'widgets/HomeList.dart';
 
@@ -16,7 +17,25 @@ class Layout {
 
   static int currItem = 0;
 
-  static Scaffold getContent(BuildContext context, content) {
+  static Scaffold getContent(BuildContext context, content, [bool showbottom = true]) {
+
+    BottomNavigationBar bottomNavBar = BottomNavigationBar(
+      currentIndex: currItem,
+      fixedColor: primary(),
+      items: <BottomNavigationBarItem>[
+        BottomNavigationBarItem(icon: Icon(Icons.home), title: Text('Home')),
+        BottomNavigationBarItem(icon: Icon(Icons.question_answer), title: Text('Sobre')),
+        BottomNavigationBarItem(icon: Icon(Icons.settings), title: Text('Configurações'))
+      ],
+      onTap: (int i) {
+        currItem = i;
+        Navigator.of(context).pushNamed(pages[i]);
+      },
+    );
+
+    if (!showbottom) {
+      currItem = 1;
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -26,19 +45,7 @@ class Layout {
         ),
         actions: _getActions(context),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: currItem,
-        fixedColor: primary(),
-        items: <BottomNavigationBarItem>[
-          BottomNavigationBarItem(icon: Icon(Icons.home), title: Text('Home')),
-          BottomNavigationBarItem(icon: Icon(Icons.question_answer), title: Text('Sobre')),
-          BottomNavigationBarItem(icon: Icon(Icons.settings), title: Text('Configurações'))
-        ],
-        onTap: (int i) {
-          currItem = i;
-          Navigator.of(context).pushNamed(pages[i]);
-        },
-      ),
+      bottomNavigationBar: showbottom ? bottomNavBar : null,
       body: content,
     );
   }
@@ -101,6 +108,9 @@ class Layout {
                           leading: Icon(Icons.pages),
                           title: Text(_c.text),
                           trailing: Icon(Icons.more_vert),
+                          onTap: () {
+                            Navigator.of(context).pushNamed(ListPage.tag);
+                          },
                         )
                       );
 

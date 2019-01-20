@@ -5,6 +5,8 @@ import 'pages/home.dart';
 import 'pages/about.dart';
 import 'pages/settings.dart';
 
+import 'pages/list.dart';
+
 void main() => runApp(ThizerList());
 
 class ThizerList extends StatelessWidget {
@@ -12,7 +14,8 @@ class ThizerList extends StatelessWidget {
   final routes = <String, WidgetBuilder> {
     HomePage.tag: (context) => HomePage(),
     AboutPage.tag: (context) => AboutPage(),
-    SettingsPage.tag: (context) => SettingsPage()
+    SettingsPage.tag: (context) => SettingsPage(),
+    ListPage.tag: (context) => ListPage()
   };
 
   @override
