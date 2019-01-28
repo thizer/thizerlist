@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'models/Lista.dart';
 
 import 'pages/home.dart';
 import 'pages/about.dart';
@@ -29,7 +30,7 @@ class Layout {
       ],
       onTap: (int i) {
         currItem = i;
-        Navigator.of(context).pushNamed(pages[i]);
+        Navigator.of(context).pushReplacementNamed(pages[i]);
       },
     );
 
@@ -72,6 +73,7 @@ class Layout {
 
               final input = TextFormField(
                 controller: _c,
+                autofocus: true,
                 decoration: InputDecoration(
                   hintText: 'Nome',
                   contentPadding: EdgeInsets.fromLTRB(20, 10, 20, 10),
@@ -103,18 +105,18 @@ class Layout {
                     child: Text('Adicionar', style: TextStyle(color: Layout.light())),
                     onPressed: () {
                       
-                      HomeList.items.add(
-                        ListTile(
-                          leading: Icon(Icons.pages),
-                          title: Text(_c.text),
-                          trailing: Icon(Icons.more_vert),
-                          onTap: () {
-                            Navigator.of(context).pushNamed(ListPage.tag);
-                          },
-                        )
-                      );
+                      Lista listaBo = Lista();
 
-                      Navigator.of(ctx).popAndPushNamed(HomePage.tag);
+                      listaBo.insert({
+                        'name': _c.text,
+                        'created': DateTime.now().toString()
+                      }).then((newRowId) {
+
+                        Navigator.of(ctx).pop();
+                        Navigator.of(ctx).pushReplacementNamed(HomePage.tag);
+
+                      });
+
                     },
                   )
                 ],
