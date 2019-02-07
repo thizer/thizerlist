@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:thizerlist/layout.dart';
+import 'dart:async';
 
 import 'package:thizerlist/models/Lista.dart';
 import '../widgets/HomeList.dart';
@@ -16,13 +17,19 @@ class HomePage extends StatefulWidget {
 
 class HomePageState extends State<HomePage> {
 
-  Lista listaBo = Lista();
+  final HomeListBloc listaBloc = HomeListBloc();
 
   @override
-  Widget build(BuildContext context){
+  void dispose() {
+    listaBloc.dispose();
+    super.dispose();
+  }
 
-    final content = FutureBuilder(
-      future: listaBo.list(),
+  @override
+  Widget build(BuildContext context) {
+
+    final content = StreamBuilder<List<Map>>(
+      stream: listaBloc.lists,
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         switch (snapshot.connectionState) {
           case ConnectionState.none:
@@ -40,5 +47,26 @@ class HomePageState extends State<HomePage> {
     );
 
     return Layout.getContent(context, content);
+  }
+}
+
+class HomeListBloc {
+
+  HomeListBloc() {
+    getList();
+  }
+
+  Lista listaBo = Lista();
+
+  final _controller = StreamController<List<Map>>.broadcast();
+
+  get lists => _controller.stream;
+
+  dispose() {
+    _controller.close();
+  }
+
+  getList() async {
+    _controller.sink.add(await listaBo.list());
   }
 }
