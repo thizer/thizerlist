@@ -21,6 +21,7 @@ dependencies:
   cupertino_icons: ^0.1.2
   sqflite: any
   intl: any
+  flutter_slidable: any
 
 dev_dependencies:
   flutter_test:
