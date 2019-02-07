@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../pages/home.dart';
+import '../pages/list.dart';
 import '../models/Lista.dart';
+import '../layout.dart';
 
 enum ListAction { edit, delete }
 
@@ -10,15 +12,13 @@ class HomeList extends StatefulWidget {
 
   final List<Map> items;
 
-  HomeList({this.items}) : super();
+  HomeList({ this.items }) : super();
 
   @override
   _HomeListState createState() => _HomeListState();
 }
 
 class _HomeListState extends State<HomeList> {
-
-  List<Widget> values = List<Widget>();
 
   Lista listaBo = Lista();
   
@@ -53,7 +53,7 @@ class _HomeListState extends State<HomeList> {
             onSelected: (ListAction result) {
               switch(result) {
                 case ListAction.edit:
-                  
+                  showEditDialog(context, item);
                 break;
                 case ListAction.delete:
                   listaBo.delete(item['pk_lista']).then((deleted) {
@@ -83,8 +83,74 @@ class _HomeListState extends State<HomeList> {
               ];
             },
           ),
+          onTap: () {
+            Navigator.of(context).pushNamed(ListPage.tag);
+          },
         );
       },
+    );
+  }
+
+  void showEditDialog(BuildContext context, Map item) {
+    
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext ctx) {
+
+        TextEditingController _cEdit = TextEditingController();
+        _cEdit.text = item['name'];
+
+        final input = TextFormField(
+          controller: _cEdit,
+          autofocus: true,
+          decoration: InputDecoration(
+            hintText: 'Nome',
+            contentPadding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(5)
+            )
+          ),
+        );
+
+        return AlertDialog(
+          title: Text('Editar'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                input
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            RaisedButton(
+              color: Layout.secondary(),
+              child: Text('Cancelar', style: TextStyle(color: Layout.light())),
+              onPressed: () {
+                Navigator.of(ctx).pop();
+              },
+            ),
+            RaisedButton(
+              color: Layout.primary(),
+              child: Text('Salvar', style: TextStyle(color: Layout.light())),
+              onPressed: () {
+                Lista listaBo = Lista();
+
+                listaBo.update({
+                  'name': _cEdit.text,
+                  'created': DateTime.now().toString()
+                }, item['pk_lista']).then((saved) {
+
+                  Navigator.of(ctx).pop();
+                  Navigator.of(ctx).pushReplacementNamed(HomePage.tag);
+
+                });
+              },
+            )
+          ],
+        );
+
+      }
     );
   }
 }
