@@ -91,7 +91,7 @@ class Layout {
                       child: Text('Adicionar', style: TextStyle(color: Layout.light())),
                       onPressed: () {
                         
-                        Lista listaBo = Lista();
+                        ModelLista listaBo = ModelLista();
 
                         listaBo.insert({
                           'name': _c.text,

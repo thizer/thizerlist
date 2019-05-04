@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../pages/home.dart';
-import '../pages/list.dart';
+import '../pages/items.dart';
 import '../models/Lista.dart';
 import '../layout.dart';
 
@@ -20,7 +20,7 @@ class HomeList extends StatefulWidget {
 
 class _HomeListState extends State<HomeList> {
 
-  Lista listaBo = Lista();
+  ModelLista listaBo = ModelLista();
   
   @override
   Widget build(BuildContext context) {
@@ -46,7 +46,7 @@ class _HomeListState extends State<HomeList> {
         DateTime created = DateTime.tryParse(item['created']);
 
         return ListTile(
-          leading: Icon(Icons.pages),
+          leading: Icon(Icons.pages, size: 42),
           title: Text(item['name']),
           subtitle: Text(df.format(created)),
           trailing: PopupMenuButton<ListAction>(
@@ -84,7 +84,12 @@ class _HomeListState extends State<HomeList> {
             },
           ),
           onTap: () {
-            Navigator.of(context).pushNamed(ListPage.tag);
+
+            // Aponta na lista qual esta selecionada
+            ItemsPage.pkList = item['pk_lista'];
+
+            // Muda de pagina
+            Navigator.of(context).pushNamed(ItemsPage.tag);
           },
         );
       },
@@ -134,7 +139,7 @@ class _HomeListState extends State<HomeList> {
               color: Layout.primary(),
               child: Text('Salvar', style: TextStyle(color: Layout.light())),
               onPressed: () {
-                Lista listaBo = Lista();
+                ModelLista listaBo = ModelLista();
 
                 listaBo.update({
                   'name': _cEdit.text,

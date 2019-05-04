@@ -56,7 +56,7 @@ class HomeListBloc {
     getList();
   }
 
-  Lista listaBo = Lista();
+  ModelLista listaBo = ModelLista();
 
   final _controller = StreamController<List<Map>>.broadcast();
 
