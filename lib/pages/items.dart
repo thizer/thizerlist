@@ -30,6 +30,9 @@ class _ItemsPageState extends State<ItemsPage> {
     leftSymbol: 'R\$ '
   );
 
+  // Filter from search bar
+  String filterText = "";
+  
   final ItemsListBloc itemsListBloc =ItemsListBloc();
 
   @override
@@ -61,7 +64,7 @@ class _ItemsPageState extends State<ItemsPage> {
               children: <Widget>[
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 80,
-                  child: TextFormField(
+                  child: TextField(
                     decoration: InputDecoration(
                       fillColor: Colors.white,
                       filled: true,
@@ -69,8 +72,13 @@ class _ItemsPageState extends State<ItemsPage> {
                       contentPadding: EdgeInsets.fromLTRB(20, 10, 20, 10),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(32)
-                      )
+                      ),
                     ),
+                    onChanged: (text) {
+                      setState(() {
+                        filterText = text;
+                      });
+                    },
                   ),
                 ),
                 SizedBox(width: 10),
@@ -104,7 +112,7 @@ class _ItemsPageState extends State<ItemsPage> {
                       print(snapshot.error);
                       return Text('Error: ${snapshot.error}');
                     } else {
-                      return ItemsList(items: snapshot.data);
+                      return ItemsList(items: snapshot.data, filter: filterText);
                     }
                 }
               },

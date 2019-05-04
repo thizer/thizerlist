@@ -6,8 +6,9 @@ import 'package:thizerlist/application.dart';
 class ItemsList extends StatefulWidget {
 
   final List<Map> items;
+  final String filter;
 
-  const ItemsList({Key key, this.items}) : super(key: key);
+  const ItemsList({Key key, this.items, this.filter}) : super(key: key);
 
   @override
   _ItemsListState createState() => _ItemsListState();
@@ -19,18 +20,51 @@ class _ItemsListState extends State<ItemsList> {
   Widget build(BuildContext context) {
 
     // Item default
-    if (widget.items.length == 0) {
-      return ListView(children: <Widget>[ListTile(
-        leading: Icon(Icons.check_box_outline_blank, size: 42),
-        title: Text('Nenhum item para exibir ainda'),
-      )]);
+    if (widget.items.isEmpty) {
+      return ListView(children: <Widget>[
+        ListTile(title: Text('Nenhum item para exibir ainda'))
+      ]);
+    }
+
+    // The list after filter apply
+    List<Map> filteredList = List<Map>();
+
+    // There is some filter?
+    if (widget.filter.isNotEmpty) {
+      for (dynamic item in widget.items) {
+
+        // Check if theres this filter in the current item
+        String name = item['name'].toString().toLowerCase();
+        if (name.contains(widget.filter.toLowerCase())) {
+          filteredList.add(item);
+        }
+      }
+    } else {
+      filteredList.addAll(widget.items);
+    }
+  
+    // Empty after filters
+    if (filteredList.isEmpty) {
+      return ListView(children: <Widget>[
+        ListTile(title: Text('Nenhum item encontrado...'))
+      ]);
     }
 
     return ListView.builder(
-      itemCount: widget.items.length,
+      itemCount: filteredList.length,
       itemBuilder: (BuildContext context, int i) {
 
-        Map item = widget.items[i];
+        Map item = filteredList[i];
+
+        // // There is some filter?
+        // if (widget.filter.isNotEmpty) {
+
+        //   // Check if theres this filter in the current item
+        //   String name = item['name'].toString().toLowerCase();
+        //   if (name.contains(widget.filter.toLowerCase()) == false) {
+        //     return null;
+        //   }
+        // }
 
         double realVal =currencyToDouble(item['valor']);
         String valTotal = doubleToCurrency(realVal * item['quantidade']);
