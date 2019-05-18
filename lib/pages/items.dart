@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import '../widgets/ItemsList.dart';
-
 import 'dart:async';
-import 'package:thizerlist/application.dart';
 
-import 'package:flutter_masked_text/flutter_masked_text.dart';
+import '../widgets/ItemsList.dart';
 import '../models/Item.dart';
 
 import 'package:thizerlist/layout.dart';
+
+import 'item-add.dart';
+import 'item-edit.dart';
 
 class ItemsPage extends StatefulWidget {
 
@@ -20,15 +20,6 @@ class ItemsPage extends StatefulWidget {
 }
 
 class _ItemsPageState extends State<ItemsPage> {
-
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final TextEditingController _cName = TextEditingController();
-  final TextEditingController _cQtd = TextEditingController();
-  final MoneyMaskedTextController _cValor =MoneyMaskedTextController(
-    thousandSeparator: '.',
-    decimalSeparator: ',',
-    leftSymbol: 'R\$ '
-  );
 
   // Filter from search bar
   String filterText = "";
@@ -87,9 +78,9 @@ class _ItemsPageState extends State<ItemsPage> {
                     mini: true,
                     backgroundColor: Layout.info(),
                     onPressed: () {
-                      setState(() {
-                        _addNewOne(context);
-                      });
+
+                      // Abre tela para criar item de lista
+                      Navigator.of(context).pushNamed(ItemAddPage.tag);
                     },
                     child: Icon(Icons.add),
                   ),
@@ -175,119 +166,6 @@ class _ItemsPageState extends State<ItemsPage> {
     );
 
     return Layout.getContent(context, content, false);
-  }
-
-  void _addNewOne(BuildContext context) {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext ctx) {
-
-        final inputName = TextFormField(
-          controller: _cName,
-          autofocus: true,
-          decoration: InputDecoration(
-            hintText: 'Nome do item',
-            contentPadding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(5)
-            )
-          ),
-          validator: (value) {
-            if (value.isEmpty) {
-              return 'Obrigatório';
-            }
-          },
-        );
-
-        _cQtd.text = '1';
-        final inputQuantidade = TextFormField(
-          controller: _cQtd,
-          autofocus: false,
-          keyboardType: TextInputType.number,
-          decoration: InputDecoration(
-            hintText: 'Quantidade',
-            contentPadding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(5)
-            )
-          ),
-          validator: (value) {
-            if (int.parse(value) < 1) {
-              return 'Informe um número positivo';
-            }
-          },
-        );
-
-        final inputValor = TextFormField(
-          controller: _cValor,
-          autofocus: false,
-          keyboardType: TextInputType.numberWithOptions(decimal: true),
-          decoration: InputDecoration(
-            hintText: 'Valor R\$',
-            contentPadding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(5)
-            )
-          ),
-          validator: (value) {
-            
-            if (currencyToDouble(value) < 0.0) {
-              return 'Obrigatório';
-            }
-
-          },
-        );
-
-        return Form(
-          key: _formKey,
-          child: AlertDialog(
-            title: Text('Adicionar Item'),
-            content: SingleChildScrollView(
-              child: ListBody(children: <Widget>[
-                inputName,
-                SizedBox(height: 15),
-                inputQuantidade,
-                SizedBox(height: 15),
-                inputValor
-              ]),
-            ),
-            actions: <Widget>[
-              RaisedButton(
-                color: Layout.secondary(),
-                child: Text('Cancelar', style:TextStyle(color: Layout.light())),
-                onPressed: () {
-                  Navigator.of(ctx).pop();
-                },
-              ),
-              RaisedButton(
-                color: Layout.primary(),
-                child: Text('Salvar', style:TextStyle(color: Layout.light())),
-                onPressed: () {
-                  if (_formKey.currentState.validate()) {
-
-                    // Instancia model
-                    ModelItem itemBo = ModelItem();
-
-                    // Adiciona no banco de dados
-                    itemBo.insert({
-                      'fk_lista': ItemsPage.pkList,
-                      'name': _cName.text,
-                      'quantidade': _cQtd.text,
-                      'valor': _cValor.text,
-                      'created': DateTime.now().toString()
-                    }).then((saved) {
-                      Navigator.of(ctx).pop();
-                      Navigator.of(ctx).pushReplacementNamed(ItemsPage.tag);
-                    });
-                  }
-                },
-              )
-            ],
-          ),
-        );
-      }
-    );
   }
 }
 
