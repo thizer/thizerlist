@@ -21,7 +21,7 @@ dependencies:
   cupertino_icons: ^0.1.2
   sqflite: any
   intl: any
-  flutter_slidable: any
+  flutter_slidable: 0.4.9
   flutter_masked_text: ^0.8.0
 
 dev_dependencies:
