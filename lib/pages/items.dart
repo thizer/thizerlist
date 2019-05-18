@@ -7,7 +7,6 @@ import '../models/Item.dart';
 import 'package:thizerlist/layout.dart';
 
 import 'item-add.dart';
-import 'item-edit.dart';
 
 class ItemsPage extends StatefulWidget {
 

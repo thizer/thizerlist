@@ -58,7 +58,7 @@ class _ItemAddPageState extends State<ItemAddPage> {
         )
       ),
       validator: (value) {
-        if (int.parse(value) < 1) {
+        if (value.isEmpty || int.parse(value) < 1) {
           return 'Informe um número positivo';
         }
       },

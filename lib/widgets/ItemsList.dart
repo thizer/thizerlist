@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:thizerlist/layout.dart';
 import 'package:thizerlist/application.dart';
+import 'package:thizerlist/pages/item-edit.dart';
+import 'package:thizerlist/models/Item.dart';
 
 class ItemsList extends StatefulWidget {
 
@@ -50,21 +52,14 @@ class _ItemsListState extends State<ItemsList> {
       ]);
     }
 
+    // Instancia model
+    ModelItem itemBo = ModelItem();
+
     return ListView.builder(
       itemCount: filteredList.length,
       itemBuilder: (BuildContext context, int i) {
 
         Map item = filteredList[i];
-
-        // // There is some filter?
-        // if (widget.filter.isNotEmpty) {
-
-        //   // Check if theres this filter in the current item
-        //   String name = item['name'].toString().toLowerCase();
-        //   if (name.contains(widget.filter.toLowerCase()) == false) {
-        //     return null;
-        //   }
-        // }
 
         double realVal =currencyToDouble(item['valor']);
         String valTotal = doubleToCurrency(realVal * item['quantidade']);
@@ -90,7 +85,15 @@ class _ItemsListState extends State<ItemsList> {
               icon: Icons.edit,
               color: Colors.black45,
               onTap: () {
-                print('Editar');
+                
+                itemBo.getItem(item['pk_item']).then((Map i) {
+
+                  // Adiciona dados do item a pagina
+                  ItemEditPage.item = i;
+
+                  // Abre a pagina
+                  Navigator.of(context).pushNamed(ItemEditPage.tag);
+                });
               },
             ),
             IconSlideAction(
