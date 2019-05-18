@@ -66,7 +66,7 @@ class _ItemsListState extends State<ItemsList> {
         String valTotal = doubleToCurrency(realVal * item['quantidade']);
 
         return Slidable(
-          delegate: SlidableDrawerDelegate(),
+          actionPane: SlidableDrawerActionPane(),
           actionExtentRatio: 0.2,
           closeOnScroll: true,
           child: ListTile(
