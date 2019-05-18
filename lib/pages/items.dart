@@ -13,6 +13,7 @@ class ItemsPage extends StatefulWidget {
   static final tag = 'items-page';
 
   static int pkList;
+  static String nameList;
 
   @override
   _ItemsPageState createState() => _ItemsPageState();
@@ -41,7 +42,7 @@ class _ItemsPageState extends State<ItemsPage> {
             width: MediaQuery.of(context).size.width,
             color: Color.fromRGBO(230, 230, 230, 0.5),
             padding: EdgeInsets.only(left: 15, top: 10),
-            child: Text('Nome da lista', style: TextStyle(
+            child: Text('Lista: '+ItemsPage.nameList, style: TextStyle(
               fontSize: 16,
               color: Layout.primary()
             )),

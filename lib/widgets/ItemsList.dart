@@ -3,6 +3,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:thizerlist/layout.dart';
 import 'package:thizerlist/application.dart';
 import 'package:thizerlist/pages/item-edit.dart';
+import 'package:thizerlist/pages/items.dart';
 import 'package:thizerlist/models/Item.dart';
 
 class ItemsList extends StatefulWidget {
@@ -101,7 +102,35 @@ class _ItemsListState extends State<ItemsList> {
               icon: Icons.delete,
               color: Colors.red,
               onTap: () {
-                print('Deletar');
+                showDialog(
+                  context: context,
+                  barrierDismissible: true,
+                  builder: (BuildContext ctx) {
+                    return AlertDialog(
+                      title: Text('Tem certeza?'),
+                      content: Text('Esta ação irá remover o item selecionado e não poderá ser desfeita'),
+                      actions: <Widget>[
+                        RaisedButton(
+                          color: Layout.secondary(),
+                          child: Text('Cancelar', style: TextStyle(color: Layout.light())),
+                          onPressed: () {
+                            Navigator.of(ctx).pop();
+                          },
+                        ),
+                        RaisedButton(
+                          color: Layout.danger(),
+                          child: Text('Remover', style: TextStyle(color: Layout.light())),
+                          onPressed: () {
+                            itemBo.delete(item['pk_item']);
+
+                            Navigator.of(ctx).pop();
+                            Navigator.of(ctx).pushReplacementNamed(ItemsPage.tag);
+                          }
+                        )
+                      ],
+                    );
+                  }
+                );
               },
             )
           ],

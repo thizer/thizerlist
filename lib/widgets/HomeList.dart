@@ -87,6 +87,7 @@ class _HomeListState extends State<HomeList> {
 
             // Aponta na lista qual esta selecionada
             ItemsPage.pkList = item['pk_lista'];
+            ItemsPage.nameList = item['name'];
 
             // Muda de pagina
             Navigator.of(context).pushNamed(ItemsPage.tag);
