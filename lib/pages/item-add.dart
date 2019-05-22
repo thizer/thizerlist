@@ -77,8 +77,8 @@ class _ItemAddPageState extends State<ItemAddPage> {
       ),
       validator: (value) {
         
-        if (currencyToDouble(value) < 0.0) {
-          return 'Obrigatório';
+        if (currencyToDouble(value) <= 0.0) {
+          return 'Campo obrigatório, escolha um valor maior que zero';
         }
 
       },
