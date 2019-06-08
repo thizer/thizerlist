@@ -18,6 +18,7 @@ List<String> dbCreate = [
     name TEXT,
     quantidade INTEGER,
     valor DECIMAL(10,2),
+    checked INTEGER DEFAULT 0,
     created TEXT
   )"""
 ];

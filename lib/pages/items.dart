@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 
-import '../widgets/ItemsList.dart';
-import '../models/Item.dart';
+import 'package:thizerlist/widgets/ItemsList.dart';
+import 'package:thizerlist/models/Item.dart';
 
+import 'package:thizerlist/application.dart';
 import 'package:thizerlist/layout.dart';
 
 import 'item-add.dart';
@@ -24,12 +25,20 @@ class _ItemsPageState extends State<ItemsPage> {
   // Filter from search bar
   String filterText = "";
   
-  final ItemsListBloc itemsListBloc =ItemsListBloc();
+  final ItemsListBloc itemsListBloc = ItemsListBloc();
 
   @override
   void dispose() {
     itemsListBloc.dispose();
     super.dispose();
+  }
+
+  // Will be called by ItemsList to force the list
+  // to be updated 
+  void refresher() {
+    setState(() {
+      this.itemsListBloc.getList();
+    });
   }
 
   @override
@@ -103,7 +112,13 @@ class _ItemsPageState extends State<ItemsPage> {
                       print(snapshot.error);
                       return Text('Error: ${snapshot.error}');
                     } else {
-                      return ItemsList(items: snapshot.data, filter: filterText);
+
+                      return ItemsList(
+                        items: snapshot.data,
+                        filter: filterText,
+                        refresher: refresher
+                      );
+
                     }
                 }
               },
@@ -125,41 +140,91 @@ class _ItemsPageState extends State<ItemsPage> {
               ),
             ),
             height: 80,
-            child: Row(children: <Widget>[
-              Container(
-                width: MediaQuery.of(context).size.width/2,
-                padding: EdgeInsets.all(10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    Column(children: <Widget>[Text('Items'), Text('10', textScaleFactor: 1.2)]),
-                    Column(children: <Widget>[Text('Carrinho'), Text('2', textScaleFactor: 1.2)]),
-                    Column(children: <Widget>[Text('Faltando'), Text('8', textScaleFactor: 1.2)]),
-                  ],
-                ),
-              ),
-              Container(
-                color: Color.fromRGBO(0, 0, 0, 0.04),
-                width: MediaQuery.of(context).size.width/2,
-                padding: EdgeInsets.only(left: 10, top: 10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text('Sub  : R\$ 5,00', style: TextStyle(
-                      fontSize: 18,
-                      color: Layout.dark(0.6),
-                      fontWeight: FontWeight.bold
-                    )),
-                    Text('Total: R\$ 15,00', style: TextStyle(
-                      fontSize: 18,
-                      color: Layout.info(),
-                      fontWeight: FontWeight.bold
-                    ))
-                  ],
-                ),
-              )
-            ]),
+            child: StreamBuilder<List<Map>>(
+              stream: itemsListBloc.lists,
+              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                switch (snapshot.connectionState) {
+                  case ConnectionState.none:
+                  case ConnectionState.waiting:
+                    return const Center(child: Text('Carregando...'));
+                    break; // Useless after return
+                  default:
+                    if (snapshot.hasError) {
+                      print(snapshot.error);
+                      return Text('Error: ${snapshot.error}');
+                    } else {
+
+                      // Recupera os itens
+                      List<Map> items = snapshot.data;
+
+                      // Total de itens
+                      int qtdTotal = items.length;
+
+                      // Total de itens marcados
+                      int qtdChecked = 0;
+
+                      // Valor total quando todos os items estiverem marcados
+                      double subTotal = 0.0;
+
+                      // Valor total de items marcados
+                      double vlrTotal = 0.0;
+
+                      for (Map item in items) {
+
+                        double vlr = currencyToFloat(item['valor']) * item['quantidade'];
+                        subTotal += vlr;
+                        
+                        if (item['checked'] == 1) {
+                          qtdChecked++;
+                          vlrTotal += vlr;
+                        }
+                      }
+
+                      // Quando todos os items forem marcados
+                      // o total devera ficar Verde (success)
+                      bool isClosed = (subTotal == vlrTotal);
+
+                      return Row(children: <Widget>[
+                        Container(
+                          width: MediaQuery.of(context).size.width/2,
+                          padding: EdgeInsets.all(10),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              Column(children: <Widget>[Text('Items'), Text(qtdTotal.toString(), textScaleFactor: 1.2)]),
+                              Column(children: <Widget>[Text('Carrinho'), Text(qtdChecked.toString(), textScaleFactor: 1.2)]),
+                              Column(children: <Widget>[Text('Faltando'), Text((qtdTotal - qtdChecked).toString(), textScaleFactor: 1.2)]),
+                            ],
+                          ),
+                        ),
+                        Container(
+                          color: Color.fromRGBO(0, 0, 0, 0.04),
+                          width: MediaQuery.of(context).size.width/2,
+                          padding: EdgeInsets.only(left: 10, top: 10),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Text('Sub: '+doubleToCurrency(subTotal), style: TextStyle(
+                                fontSize: 18,
+                                color: Layout.dark(0.6),
+                                fontWeight: FontWeight.bold
+                              )),
+                              SizedBox(height: 5),
+                              Text('Total: '+doubleToCurrency(vlrTotal), style: TextStyle(
+                                fontSize: 22,
+                                color: isClosed ? Layout.success() : Layout.info(),
+                                fontWeight: FontWeight.bold
+                              ))
+                            ],
+                          ),
+                        )
+                      ]);
+                      
+                    }
+                }
+              },
+            )
           )
         ],
       ),

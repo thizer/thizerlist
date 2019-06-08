@@ -10,8 +10,9 @@ class ItemsList extends StatefulWidget {
 
   final List<Map> items;
   final String filter;
+  final Function refresher;
 
-  const ItemsList({Key key, this.items, this.filter}) : super(key: key);
+  const ItemsList({Key key, this.items, this.filter, this.refresher}) : super(key: key);
 
   @override
   _ItemsListState createState() => _ItemsListState();
@@ -71,8 +72,17 @@ class _ItemsListState extends State<ItemsList> {
           closeOnScroll: true,
           child: ListTile(
             leading: GestureDetector(
-              child: Icon(Icons.check_box_outline_blank, color: Layout.secondary(), size: 42),
+              child: Icon(
+                ((item['checked'] == 1) ? Icons.check_box : Icons.check_box_outline_blank),
+                color: ((item['checked'] == 0) ? Layout.info() : Layout.success()),
+                size: 42
+              ),
               onTap: () {
+                itemBo.update({ 'checked': !(item['checked'] == 1) }, item['pk_item']).then((bool updated) {
+                  if (updated) {
+                    widget.refresher();
+                  }
+                });
                 print('Marcar como adquirido');
               },
             ),
