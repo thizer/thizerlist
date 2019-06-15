@@ -45,6 +45,8 @@ class Layout {
   static List<Widget> _getActions(BuildContext context) {
 
     List<Widget> items = List<Widget>();
+
+    GlobalKey<FormState> _formKey = GlobalKey<FormState>();
     TextEditingController _c = TextEditingController();
 
     if (pages[currItem] == HomePage.tag) {
@@ -57,16 +59,24 @@ class Layout {
               barrierDismissible: false,
               builder: (BuildContext ctx) {
 
-                final input = TextFormField(
-                  controller: _c,
-                  autofocus: true,
-                  decoration: InputDecoration(
-                    hintText: 'Nome',
-                    contentPadding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5)
-                    )
-                  ),
+                final input = Form(
+                  key: _formKey,
+                  child: TextFormField(
+                    controller: _c,
+                    autofocus: true,
+                    decoration: InputDecoration(
+                      hintText: 'Nome',
+                      contentPadding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5)
+                      )
+                    ),
+                    validator: (value) {
+                      if (value.isEmpty) {
+                        return 'Este campo não pode ficar vazio';
+                      }
+                    },
+                  )
                 );
 
                 return AlertDialog(
@@ -91,18 +101,20 @@ class Layout {
                       child: Text('Adicionar', style: TextStyle(color: Layout.light())),
                       onPressed: () {
                         
-                        ModelLista listaBo = ModelLista();
+                        if (_formKey.currentState.validate()) {
+                          ModelLista listaBo = ModelLista();
 
-                        listaBo.insert({
-                          'name': _c.text,
-                          'created': DateTime.now().toString()
-                        }).then((newRowId) {
+                          listaBo.insert({
+                            'name': _c.text,
+                            'created': DateTime.now().toString()
+                          }).then((newRowId) {
 
-                          Navigator.of(ctx).pop();
-                          Navigator.of(ctx).pushReplacementNamed(HomePage.tag);
+                            Navigator.of(ctx).pop();
+                            Navigator.of(ctx).pushReplacementNamed(HomePage.tag);
 
-                        });
-
+                          });
+                        }
+                        
                       },
                     )
                   ],

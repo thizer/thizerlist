@@ -40,7 +40,10 @@ class HomePageState extends State<HomePage> {
               print(snapshot.error);
               return Text('Error: ${snapshot.error}');
             } else {
-              return HomeList(items: snapshot.data);
+              return HomeList(
+                items: snapshot.data,
+                listaBloc: this.listaBloc
+              );
             }
         }
       }

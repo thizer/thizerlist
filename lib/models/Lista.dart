@@ -34,7 +34,17 @@ class ModelLista extends AbstractModel {
   @override
   Future<List<Map>> list() async {
     Database db = await this.getDb();
-    return db.rawQuery('SELECT * FROM lista ORDER BY created DESC');
+    return db.rawQuery('''
+      SELECT
+        L.*,
+        (
+          SELECT COUNT(1)
+          FROM item as i
+          WHERE i.fk_lista = L.pk_lista
+        ) as qtdItems
+      FROM lista as L
+      ORDER BY L.created DESC
+    ''');
   }
 
   @override

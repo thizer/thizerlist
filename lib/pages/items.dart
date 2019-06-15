@@ -35,11 +35,11 @@ class _ItemsPageState extends State<ItemsPage> {
 
   // Will be called by ItemsList to force the list
   // to be updated 
-  void refresher() {
-    setState(() {
-      this.itemsListBloc.getList();
-    });
-  }
+  // void refresher() {
+  //   setState(() {
+  //     this.itemsListBloc.getList();
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -116,7 +116,7 @@ class _ItemsPageState extends State<ItemsPage> {
                       return ItemsList(
                         items: snapshot.data,
                         filter: filterText,
-                        refresher: refresher
+                        itemsListBloc: this.itemsListBloc,
                       );
 
                     }
