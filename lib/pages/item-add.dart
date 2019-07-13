@@ -43,6 +43,7 @@ class _ItemAddPageState extends State<ItemAddPage> {
         if (value.isEmpty) {
           return 'Obrigatório';
         }
+        return '';
       },
     );
 
@@ -61,6 +62,7 @@ class _ItemAddPageState extends State<ItemAddPage> {
         if (value.isEmpty || int.parse(value) < 1) {
           return 'Informe um número positivo';
         }
+        return '';
       },
     );
 
@@ -81,6 +83,7 @@ class _ItemAddPageState extends State<ItemAddPage> {
           return 'Obrigatório';
         }
 
+        return '';
       },
     );
 

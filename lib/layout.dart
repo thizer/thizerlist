@@ -7,6 +7,8 @@ import 'pages/settings.dart';
 
 class Layout {
 
+  static BuildContext scaffoldContext;
+
   static final pages = [
     HomePage.tag,
     AboutPage.tag,
@@ -23,7 +25,7 @@ class Layout {
       items: <BottomNavigationBarItem>[
         BottomNavigationBarItem(icon: Icon(Icons.home), title: Text('Home')),
         BottomNavigationBarItem(icon: Icon(Icons.question_answer), title: Text('Sobre')),
-        BottomNavigationBarItem(icon: Icon(Icons.settings), title: Text('Configurações'))
+        // BottomNavigationBarItem(icon: Icon(Icons.settings), title: Text('Configurações'))
       ],
       onTap: (int i) {
         currItem = i;
@@ -38,7 +40,15 @@ class Layout {
         actions: showbottom ? _getActions(context) : [],
       ),
       bottomNavigationBar: showbottom ? bottomNavBar : null,
-      body: content,
+      body: new Builder(
+        builder: (BuildContext context) {
+
+          // Store the scaffold context to show snackbars
+          Layout.scaffoldContext = context;
+
+          return content;
+        },
+      ),
     );
   }
 
@@ -75,6 +85,7 @@ class Layout {
                       if (value.isEmpty) {
                         return 'Este campo não pode ficar vazio';
                       }
+                      return '';
                     },
                   )
                 );

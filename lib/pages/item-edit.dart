@@ -48,6 +48,8 @@ class _ItemEditPageState extends State<ItemEditPage> {
         if (value.isEmpty) {
           return 'Obrigatório';
         }
+
+        return '';
       },
     );
 
@@ -67,6 +69,7 @@ class _ItemEditPageState extends State<ItemEditPage> {
         if (value.isEmpty || int.parse(value) < 1) {
           return 'Informe um número positivo';
         }
+        return '';
       },
     );
 
@@ -83,11 +86,10 @@ class _ItemEditPageState extends State<ItemEditPage> {
         )
       ),
       validator: (value) {
-        
         if (currencyToDouble(value) < 0.0) {
           return 'Obrigatório';
         }
-
+        return '';
       },
     );
 
