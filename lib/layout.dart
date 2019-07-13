@@ -85,7 +85,7 @@ class Layout {
                       if (value.isEmpty) {
                         return 'Este campo não pode ficar vazio';
                       }
-                      return '';
+                      return null;
                     },
                   )
                 );

@@ -30,7 +30,7 @@ class AboutPage extends StatelessWidget {
           children: <Widget>[
             Icon(FontAwesomeIcons.externalLinkAlt, color: Colors.white, size: 10),
             SizedBox(width: 5),
-            Text('www.thizer.com', style: TextStyle(color: Colors.white))
+            Text(' www.thizer.com', style: TextStyle(color: Colors.white))
           ]
         ),
         onPressed: () {
@@ -39,13 +39,11 @@ class AboutPage extends StatelessWidget {
             if (status) {
               launch(url);
             } else {
-
               // Show an snackbar error
               Scaffold.of(Layout.scaffoldContext).showSnackBar(SnackBar(
-                content: new Text('Não foi possível abrir o site, tente novamente mais tarde'),
-                duration: new Duration(seconds: 15),
+                content: Text('Não foi possível abrir o site, tente novamente mais tarde'),
+                duration: Duration(seconds: 15),
               ));
-
             }
           });
         },
@@ -61,7 +59,7 @@ class AboutPage extends StatelessWidget {
           children: <Widget>[
             Icon(FontAwesomeIcons.youtube, color: Colors.white, size: 15),
             SizedBox(width: 5),
-            Text('Thizer no YouTube', style: TextStyle(color: Colors.white))
+            Text('  Thizer no YouTube', style: TextStyle(color: Colors.white))
           ],
         ),
         onPressed: () {
@@ -70,13 +68,11 @@ class AboutPage extends StatelessWidget {
             if (status) {
               launch(url);
             } else {
-
               // Show an snackbar error
               Scaffold.of(Layout.scaffoldContext).showSnackBar(SnackBar(
-                content: new Text('Não foi possível abrir o site, tente novamente mais tarde'),
-                duration: new Duration(seconds: 15),
+                content: Text('Não foi possível abrir o site, tente novamente mais tarde'),
+                duration: Duration(seconds: 15),
               ));
-
             }
           });
         },
@@ -97,7 +93,6 @@ class AboutPage extends StatelessWidget {
           SizedBox(height: 20),
           Center(child: Text('Um aplicativo Flutter por:')),
           Center(child: theLogoThizer),
-          // theLogoThizer,
           SizedBox(height: 20),
           Column(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
