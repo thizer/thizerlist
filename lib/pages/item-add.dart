@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 
 import 'package:thizerlist/application.dart';
@@ -6,6 +7,8 @@ import 'package:thizerlist/layout.dart';
 import 'items.dart';
 
 import 'package:thizerlist/models/Item.dart';
+
+import 'package:thizerlist/utils/QuantityFormatter.dart';
 
 class ItemAddPage extends StatefulWidget {
 
@@ -25,6 +28,9 @@ class _ItemAddPageState extends State<ItemAddPage> {
     decimalSeparator: ',',
     leftSymbol: 'R\$ '
   );
+
+  String selectedUnit = unity.keys.first;
+  bool isSelected = false;
 
   @override
   Widget build(BuildContext context) {
@@ -58,12 +64,35 @@ class _ItemAddPageState extends State<ItemAddPage> {
           borderRadius: BorderRadius.circular(5)
         )
       ),
+      inputFormatters: [new QuantityFormatter(precision: unity[selectedUnit])],
       validator: (value) {
-        if (value.isEmpty || int.parse(value) < 1) {
+
+        double valueAsDouble = (double.tryParse(value) ?? 0.0);
+
+        if (valueAsDouble <= 0) {
           return 'Informe um número positivo';
         }
         return null;
       },
+    );
+
+    final inputUnit = DropdownButton<String>(
+      value: selectedUnit,
+      onChanged: (String newValue) {
+        setState(() {
+
+          double valueAsDouble = (double.tryParse(inputQuantidade.controller.text) ?? 0.0);
+          inputQuantidade.controller.text = valueAsDouble.toStringAsFixed(unity[newValue]);
+
+          selectedUnit = newValue;
+        });
+      },
+      items: unity.keys.map<DropdownMenuItem<String>>((String value) {
+        return DropdownMenuItem<String>(
+          value: value,
+          child: Text(value),
+        );
+      }).toList(),
     );
 
     final inputValor = TextFormField(
@@ -99,12 +128,47 @@ class _ItemAddPageState extends State<ItemAddPage> {
                 fontSize: 24
               ),
             ),
-            SizedBox(height: 20),
+            SizedBox(height: 10),
+            Text('Nome do item'),
             inputName,
-            SizedBox(height: 20),
-            inputQuantidade,
-            SizedBox(height: 20),
+            SizedBox(height: 10),
+            Text('Quantidade'),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Container(
+                  width: MediaQuery.of(context).size.width -150,
+                  child: inputQuantidade,
+                ),
+                Container(width: 100, child:  inputUnit)
+              ]
+            ),
+            SizedBox(height: 10),
+            Text('Valor'),
             inputValor,
+            SizedBox(height: 10),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                Checkbox(
+                  activeColor: Layout.primary(),
+                  onChanged: (bool value) {
+                    setState(() {
+                      isSelected = value;
+                    });
+                  },
+                  value: isSelected,
+                ),
+                GestureDetector(
+                  child: Text('Já está no carrinho?', style: TextStyle(fontSize: 18)),
+                  onTap: () {
+                    setState(() {
+                      isSelected = !isSelected;
+                    });
+                  },
+                )
+              ],
+            ),
             SizedBox(height: 50),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -132,7 +196,9 @@ class _ItemAddPageState extends State<ItemAddPage> {
                       'fk_lista': ItemsPage.pkList,
                       'name': _cName.text,
                       'quantidade': _cQtd.text,
+                      'precisao': unity[selectedUnit],
                       'valor': _cValor.text,
+                      'checked': this.isSelected,
                       'created': DateTime.now().toString()
                     }).then((saved) {
                       Navigator.of(context).pop();

@@ -1,5 +1,7 @@
 import 'package:intl/intl.dart';
 
+Map<String, int> unity = Map.from({ 'Un': 0, 'Kg': 3 });
+
 String dbName = 'thizerlist.db';
 int dbVersion = 1;
 
@@ -16,7 +18,8 @@ List<String> dbCreate = [
     pk_item INTEGER PRIMARY KEY,
     fk_lista INTEGER,
     name TEXT,
-    quantidade INTEGER,
+    quantidade DECIMAL(10,3),
+    precisao INTEGER DEFAULT 0,
     valor DECIMAL(10,2),
     checked INTEGER DEFAULT 0,
     created TEXT

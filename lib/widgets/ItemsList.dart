@@ -63,6 +63,13 @@ class _ItemsListState extends State<ItemsList> {
 
         Map item = filteredList[i];
 
+        String itemUnit = 'Un';
+        unity.forEach((name, precision) {
+          if (precision == item['precisao']) {
+            itemUnit = name;
+          }
+        }); 
+
         double realVal =currencyToDouble(item['valor']);
         String valTotal = doubleToCurrency(realVal * item['quantidade']);
 
@@ -83,30 +90,39 @@ class _ItemsListState extends State<ItemsList> {
                     widget.itemsListBloc.getList();
                   }
                 });
-                print('Marcar como adquirido');
               },
             ),
             title: Text(item['name']),
-            subtitle: Text('${item['quantidade']} X ${item['valor']} = $valTotal'),
+            subtitle: Text('${item['quantidade']} $itemUnit X ${item['valor']} = $valTotal'),
             trailing: Icon(Icons.arrow_forward_ios),
+            onTap: () {
+              itemBo.getItem(item['pk_item']).then((Map i) {
+
+                // Adiciona dados do item a pagina
+                ItemEditPage.item = i;
+
+                // Abre a pagina
+                Navigator.of(context).pushNamed(ItemEditPage.tag);
+              });
+            }
           ),
           secondaryActions: <Widget>[
-            IconSlideAction(
-              caption: 'Editar',
-              icon: Icons.edit,
-              color: Colors.black45,
-              onTap: () {
+            // IconSlideAction(
+            //   caption: 'Editar',
+            //   icon: Icons.edit,
+            //   color: Colors.black45,
+            //   onTap: () {
                 
-                itemBo.getItem(item['pk_item']).then((Map i) {
+            //     itemBo.getItem(item['pk_item']).then((Map i) {
 
-                  // Adiciona dados do item a pagina
-                  ItemEditPage.item = i;
+            //       // Adiciona dados do item a pagina
+            //       ItemEditPage.item = i;
 
-                  // Abre a pagina
-                  Navigator.of(context).pushNamed(ItemEditPage.tag);
-                });
-              },
-            ),
+            //       // Abre a pagina
+            //       Navigator.of(context).pushNamed(ItemEditPage.tag);
+            //     });
+            //   },
+            // ),
             IconSlideAction(
               caption: 'Deletar',
               icon: Icons.delete,
