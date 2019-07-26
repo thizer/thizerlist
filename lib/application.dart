@@ -18,7 +18,7 @@ List<String> dbCreate = [
     pk_item INTEGER PRIMARY KEY,
     fk_lista INTEGER,
     name TEXT,
-    quantidade DECIMAL(10,3),
+    quantidade DECIMAL(10, 3),
     precisao INTEGER DEFAULT 0,
     valor DECIMAL(10,2),
     checked INTEGER DEFAULT 0,

@@ -63,12 +63,12 @@ class _ItemsListState extends State<ItemsList> {
 
         Map item = filteredList[i];
 
-        String itemUnit = 'Un';
+        String itemUnit = unity.keys.first;
         unity.forEach((name, precision) {
           if (precision == item['precisao']) {
             itemUnit = name;
           }
-        }); 
+        });
 
         double realVal =currencyToDouble(item['valor']);
         String valTotal = doubleToCurrency(realVal * item['quantidade']);
@@ -104,25 +104,9 @@ class _ItemsListState extends State<ItemsList> {
                 // Abre a pagina
                 Navigator.of(context).pushNamed(ItemEditPage.tag);
               });
-            }
+            },
           ),
           secondaryActions: <Widget>[
-            // IconSlideAction(
-            //   caption: 'Editar',
-            //   icon: Icons.edit,
-            //   color: Colors.black45,
-            //   onTap: () {
-                
-            //     itemBo.getItem(item['pk_item']).then((Map i) {
-
-            //       // Adiciona dados do item a pagina
-            //       ItemEditPage.item = i;
-
-            //       // Abre a pagina
-            //       Navigator.of(context).pushNamed(ItemEditPage.tag);
-            //     });
-            //   },
-            // ),
             IconSlideAction(
               caption: 'Deletar',
               icon: Icons.delete,

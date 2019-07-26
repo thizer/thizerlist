@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 
 import 'package:thizerlist/application.dart';
 import 'package:thizerlist/layout.dart';
+import 'package:thizerlist/utils/QuantityFormatter.dart';
 import 'items.dart';
 
 import 'package:thizerlist/models/Item.dart';
-
-import 'package:thizerlist/utils/QuantityFormatter.dart';
 
 class ItemAddPage extends StatefulWidget {
 
@@ -64,7 +62,7 @@ class _ItemAddPageState extends State<ItemAddPage> {
           borderRadius: BorderRadius.circular(5)
         )
       ),
-      inputFormatters: [new QuantityFormatter(precision: unity[selectedUnit])],
+      inputFormatters: [ new QuantityFormatter(precision: unity[this.selectedUnit]) ],
       validator: (value) {
 
         double valueAsDouble = (double.tryParse(value) ?? 0.0);
@@ -77,22 +75,22 @@ class _ItemAddPageState extends State<ItemAddPage> {
     );
 
     final inputUnit = DropdownButton<String>(
-      value: selectedUnit,
+      value: this.selectedUnit,
       onChanged: (String newValue) {
         setState(() {
 
-          double valueAsDouble = (double.tryParse(inputQuantidade.controller.text) ?? 0.0);
-          inputQuantidade.controller.text = valueAsDouble.toStringAsFixed(unity[newValue]);
+          double valueAsDouble = (double.tryParse(_cQtd.text) ?? 0.0);
+          _cQtd.text = valueAsDouble.toStringAsFixed(unity[newValue]);
 
-          selectedUnit = newValue;
+          this.selectedUnit = newValue;
         });
       },
       items: unity.keys.map<DropdownMenuItem<String>>((String value) {
         return DropdownMenuItem<String>(
           value: value,
-          child: Text(value),
+          child: Text(value)
         );
-      }).toList(),
+      }).toList()
     );
 
     final inputValor = TextFormField(
@@ -137,10 +135,10 @@ class _ItemAddPageState extends State<ItemAddPage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 Container(
-                  width: MediaQuery.of(context).size.width -150,
+                  width: MediaQuery.of(context).size.width - 150,
                   child: inputQuantidade,
                 ),
-                Container(width: 100, child:  inputUnit)
+                Container(width: 100, child: inputUnit)
               ]
             ),
             SizedBox(height: 10),
@@ -154,16 +152,16 @@ class _ItemAddPageState extends State<ItemAddPage> {
                   activeColor: Layout.primary(),
                   onChanged: (bool value) {
                     setState(() {
-                      isSelected = value;
+                      this.isSelected = value;
                     });
                   },
-                  value: isSelected,
+                  value: this.isSelected,
                 ),
                 GestureDetector(
                   child: Text('Já está no carrinho?', style: TextStyle(fontSize: 18)),
                   onTap: () {
                     setState(() {
-                      isSelected = !isSelected;
+                      this.isSelected = !this.isSelected;
                     });
                   },
                 )
@@ -196,7 +194,7 @@ class _ItemAddPageState extends State<ItemAddPage> {
                       'fk_lista': ItemsPage.pkList,
                       'name': _cName.text,
                       'quantidade': _cQtd.text,
-                      'precisao': unity[selectedUnit],
+                      'precisao': unity[this.selectedUnit],
                       'valor': _cValor.text,
                       'checked': this.isSelected,
                       'created': DateTime.now().toString()
