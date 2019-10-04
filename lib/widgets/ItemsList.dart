@@ -58,6 +58,7 @@ class _ItemsListState extends State<ItemsList> {
     ModelItem itemBo = ModelItem();
 
     return ListView.builder(
+      shrinkWrap: true,
       itemCount: filteredList.length,
       itemBuilder: (BuildContext context, int i) {
 
@@ -81,7 +82,7 @@ class _ItemsListState extends State<ItemsList> {
             leading: GestureDetector(
               child: Icon(
                 ((item['checked'] == 1) ? Icons.check_box : Icons.check_box_outline_blank),
-                color: ((item['checked'] == 0) ? Layout.info() : Layout.success()),
+                color: ((item['checked'] == 0) ? Layout.dark(0.5) : Layout.secondary()),
                 size: 42
               ),
               onTap: () {

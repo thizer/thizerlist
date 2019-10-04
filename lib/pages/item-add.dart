@@ -172,7 +172,7 @@ class _ItemAddPageState extends State<ItemAddPage> {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
               RaisedButton(
-                color: Layout.secondary(),
+                color: Layout.dark(0.2),
                 child: Text('Cancelar', style:TextStyle(color: Layout.light())),
                 padding: EdgeInsets.only(left: 50, right: 50),
                 onPressed: () {

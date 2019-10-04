@@ -49,7 +49,7 @@ class _HomeListState extends State<HomeList> {
         DateTime created = DateTime.tryParse(item['created']);
 
         return ListTile(
-          leading: Icon(Icons.pages, size: 42),
+          leading: Icon(Icons.shopping_cart, size: 42, color: Layout.secondary(0.6)),
           title: Text(item['name']),
           subtitle: Text('('+item['qtdItems'].toString()+' itens) - '+df.format(created)),
           trailing: PopupMenuButton<ListAction>(
@@ -104,22 +104,22 @@ class _HomeListState extends State<HomeList> {
                 PopupMenuItem<ListAction>(
                   value: ListAction.edit,
                   child: Row(children: <Widget>[
-                    Icon(Icons.edit),
-                    Text('Editar')
+                    Icon(Icons.edit, color: Layout.secondary()),
+                    Text('Editar', style: TextStyle(color: Layout.secondary()))
                   ]),
                 ),
                 PopupMenuItem<ListAction>(
                   value: ListAction.delete,
                   child: Row(children: <Widget>[
-                    Icon(Icons.delete),
-                    Text('Excluir')
+                    Icon(Icons.delete, color: Layout.secondary()),
+                    Text('Excluir', style: TextStyle(color: Layout.secondary()))
                   ]),
                 ),
                 PopupMenuItem<ListAction>(
                   value: ListAction.clone,
                   child: Row(children: <Widget>[
-                    Icon(Icons.content_copy),
-                    Text('Duplicar')
+                    Icon(Icons.content_copy, color: Layout.secondary()),
+                    Text('Duplicar', style: TextStyle(color: Layout.secondary()))
                   ]),
                 )
               ];
@@ -172,7 +172,7 @@ class _HomeListState extends State<HomeList> {
           ),
           actions: <Widget>[
             RaisedButton(
-              color: Layout.secondary(),
+              color: Layout.dark(0.2),
               child: Text('Cancelar', style: TextStyle(color: Layout.light())),
               onPressed: () {
                 Navigator.of(ctx).pop();

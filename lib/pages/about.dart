@@ -24,7 +24,7 @@ class AboutPage extends StatelessWidget {
     Container linkThizer = Container(
       width: 180,
       child: RaisedButton(
-        color: Layout.info(),
+        color: Layout.secondary(),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
@@ -53,7 +53,7 @@ class AboutPage extends StatelessWidget {
     Container linkYoutube = Container(
       width: 180,
       child: RaisedButton(
-        color: Layout.danger(),
+        color: Layout.primary(),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[

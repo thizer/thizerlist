@@ -17,11 +17,11 @@ class Layout {
 
   static int currItem = 0;
 
-  static Scaffold getContent(BuildContext context, content, [bool showbottom = true]) {
+  static SingleChildScrollView getContent(BuildContext context, content, [bool showbottom = true]) {
 
     BottomNavigationBar bottomNavBar = BottomNavigationBar(
       currentIndex: currItem,
-      fixedColor: primary(),
+      //fixedColor: primary(),
       items: <BottomNavigationBarItem>[
         BottomNavigationBarItem(icon: Icon(Icons.home), title: Text('Home')),
         BottomNavigationBarItem(icon: Icon(Icons.question_answer), title: Text('Sobre')),
@@ -33,22 +33,26 @@ class Layout {
       },
     );
 
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: primary(),
-        title: Text('ThizerList'),
-        actions: showbottom ? _getActions(context) : [],
-      ),
-      bottomNavigationBar: showbottom ? bottomNavBar : null,
-      body: new Builder(
-        builder: (BuildContext context) {
+    return SingleChildScrollView(
+      child: Container(
+        height: MediaQuery.of(context).size.height,
+        child: Scaffold(
+          appBar: AppBar(
+            title: Text('ThizerList'),
+            actions: showbottom ? _getActions(context) : [],
+          ),
+          bottomNavigationBar: showbottom ? bottomNavBar : null,
+          body: new Builder(
+            builder: (BuildContext context) {
 
-          // Store the scaffold context to show snackbars
-          Layout.scaffoldContext = context;
+              // Store the scaffold context to show snackbars
+              Layout.scaffoldContext = context;
 
-          return content;
-        },
-      ),
+              return content;
+            },
+          ),
+        )
+      )
     );
   }
 
@@ -101,7 +105,7 @@ class Layout {
                   ),
                   actions: <Widget>[
                     RaisedButton(
-                      color: secondary(),
+                      color: Layout.dark(0.2),
                       child: Text('Cancelar', style: TextStyle(color: Layout.light())),
                       onPressed: () {
                         Navigator.of(ctx).pop();
@@ -143,8 +147,14 @@ class Layout {
     return items;
   }
 
-  static Color primary([double opacity = 1]) => Color.fromRGBO(62, 63, 89, opacity);
-  static Color secondary([double opacity = 1]) => Color.fromRGBO(150, 150, 150, opacity);
+  static Color primary([double opacity = 1]) => Colors.red[700].withOpacity(opacity);
+  static Color primaryDark([double opacity = 1]) => Color(0xff9a0007).withOpacity(opacity);
+  static Color primaryLight([double opacity = 1]) => Color(0xffff6659).withOpacity(opacity);
+
+  static Color secondary([double opacity = 1]) => Colors.teal[700].withOpacity(opacity);
+  static Color secondaryDark([double opacity = 1]) => Color(0xff004c40).withOpacity(opacity);
+  static Color secondaryLight([double opacity = 1]) => Color(0xff48a999).withOpacity(opacity);
+
   static Color light([double opacity = 1]) => Color.fromRGBO(242, 234, 228, opacity);
   static Color dark([double opacity = 1]) => Color.fromRGBO(51, 51, 51, opacity);
 
