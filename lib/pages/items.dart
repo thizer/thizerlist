@@ -37,6 +37,7 @@ class _ItemsPageState extends State<ItemsPage> {
   Widget build(BuildContext context) {
 
     final content = Column(
+      mainAxisSize: MainAxisSize.max,
       children: <Widget>[
         Container(
           width: MediaQuery.of(context).size.width,
@@ -88,8 +89,7 @@ class _ItemsPageState extends State<ItemsPage> {
             ]
           ),
         ),
-        Container(
-          height: MediaQuery.of(context).size.height - 250,
+        Expanded(
           child: StreamBuilder<List<Map>>(
             stream: itemsListBloc.lists,
             builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -115,7 +115,7 @@ class _ItemsPageState extends State<ItemsPage> {
             },
           ),
         ),
-        Expanded(child: Container(
+        Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.only(
               topLeft: Radius.circular(10),
@@ -228,7 +228,7 @@ class _ItemsPageState extends State<ItemsPage> {
               }
             },
           )
-        ))
+        )
       ],
     );
 

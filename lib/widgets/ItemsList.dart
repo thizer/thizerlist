@@ -25,9 +25,12 @@ class _ItemsListState extends State<ItemsList> {
 
     // Item default
     if (widget.items.isEmpty) {
-      return ListView(children: <Widget>[
-        ListTile(title: Text('Nenhum item para exibir ainda'))
-      ]);
+      return ListView(
+        shrinkWrap: true,
+        children: <Widget>[
+          ListTile(title: Text('Nenhum item para exibir ainda'))
+        ]
+      );
     }
 
     // The list after filter apply
@@ -49,9 +52,12 @@ class _ItemsListState extends State<ItemsList> {
   
     // Empty after filters
     if (filteredList.isEmpty) {
-      return ListView(children: <Widget>[
-        ListTile(title: Text('Nenhum item encontrado...'))
-      ]);
+      return ListView(
+        shrinkWrap: true,
+        children: <Widget>[
+          ListTile(title: Text('Nenhum item encontrado...'))
+        ]
+      );
     }
 
     // Instancia model

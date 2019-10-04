@@ -91,7 +91,7 @@ class AboutPage extends StatelessWidget {
           SizedBox(height: 10),
           Center(child: Text('Listas de Supermercado', style: TextStyle(fontSize: 16))),
           SizedBox(height: 20),
-          Center(child: Text('Um aplicativo Flutter por:')),
+          // Center(child: Text('Um aplicativo Flutter por:')),
           Center(child: theLogoThizer),
           SizedBox(height: 20),
           Column(
