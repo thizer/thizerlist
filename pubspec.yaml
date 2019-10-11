@@ -27,9 +27,15 @@ dependencies:
   font_awesome_flutter: ^8.5.0
 
 dev_dependencies:
+  flutter_launcher_icons: "^0.7.3"
   flutter_test:
     sdk: flutter
 
+flutter_icons:
+  image_path_android: "assets/images/icones/android-icon-192x192.png"
+  image_path_ios: "assets/images/icones/apple-icon.png"
+  android: true # can specify file name here e.g. "ic_launcher"
+  ios: true # can specify file name here e.g. "My-Launcher-Icon"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://www.dartlang.org/tools/pub/pubspec
