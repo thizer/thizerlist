@@ -11,8 +11,7 @@ import 'pages/item-edit.dart';
 void main() => runApp(ThizerList());
 
 class ThizerList extends StatelessWidget {
-
-  final routes = <String, WidgetBuilder> {
+  final routes = <String, WidgetBuilder>{
     HomePage.tag: (context) => HomePage(),
     AboutPage.tag: (context) => AboutPage(),
     SettingsPage.tag: (context) => SettingsPage(),
@@ -23,20 +22,27 @@ class ThizerList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    
     return MaterialApp(
       title: 'ThizerList',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primaryColor: Layout.primary(),
         accentColor: Layout.secondary(),
         textTheme: TextTheme(
-          headline: TextStyle(fontSize: 48, fontWeight: FontWeight.bold),
-          title: TextStyle(fontSize: 24, fontStyle: FontStyle.italic, color: Layout.primary()),
-          body1: TextStyle(fontSize: 14)
-        )
+          headline5: TextStyle(
+            fontSize: 48,
+            fontWeight: FontWeight.bold,
+          ),
+          headline6: TextStyle(
+            fontSize: 24,
+            fontStyle: FontStyle.italic,
+            color: Layout.primary(),
+          ),
+          bodyText2: TextStyle(fontSize: 14),
+        ),
       ),
       home: HomePage(),
-      routes: routes
+      routes: routes,
     );
   }
 }

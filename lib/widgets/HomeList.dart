@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:thizerlist/blocs/home_list_bloc.dart';
 import 'package:thizerlist/models/Item.dart';
 
 import '../pages/home.dart';
@@ -10,31 +11,30 @@ import '../layout.dart';
 enum ListAction { edit, delete, clone }
 
 class HomeList extends StatefulWidget {
-
   final List<Map> items;
   final HomeListBloc listaBloc;
 
-  HomeList({ this.items, this.listaBloc }) : super();
+  HomeList({this.items, this.listaBloc}) : super();
 
   @override
   _HomeListState createState() => _HomeListState();
 }
 
 class _HomeListState extends State<HomeList> {
-
   ModelLista listaBo = ModelLista();
   ModelItem itemBo = ModelItem();
-  
+
   @override
   Widget build(BuildContext context) {
-
     // Item default
     if (widget.items.length == 0) {
       return ListView(
-        children: <Widget>[ListTile(
-          leading: Icon(Icons.pages),
-          title: Text('Nenhuma lista cadastrada ainda...'),
-        )],
+        children: <Widget>[
+          ListTile(
+            leading: Icon(Icons.pages),
+            title: Text('Nenhuma lista cadastrada ainda...'),
+          )
+        ],
       );
     }
 
@@ -43,26 +43,30 @@ class _HomeListState extends State<HomeList> {
     return ListView.builder(
       itemCount: widget.items.length,
       itemBuilder: (BuildContext context, int index) {
-
         Map item = widget.items[index];
 
         DateTime created = DateTime.tryParse(item['created']);
 
         return ListTile(
-          leading: Icon(Icons.shopping_cart, size: 42, color: Layout.secondary(0.6)),
+          leading:
+              Icon(Icons.shopping_cart, size: 42, color: Layout.secondary(0.6)),
           title: Text(item['name']),
-          subtitle: Text('('+item['qtdItems'].toString()+' itens) - '+df.format(created)),
+          subtitle: Text('(' +
+              item['qtdItems'].toString() +
+              ' itens) - ' +
+              df.format(created)),
           trailing: PopupMenuButton<ListAction>(
             onSelected: (ListAction result) {
-              switch(result) {
+              switch (result) {
                 case ListAction.edit:
                   showEditDialog(context, item);
-                break;
+                  break;
                 case ListAction.delete:
 
                   // First of all we delete all items from this list
-                  itemBo.deleteAllFromList(item['pk_lista']).then((int rowsDeleted) {
-                    
+                  itemBo
+                      .deleteAllFromList(item['pk_lista'])
+                      .then((int rowsDeleted) {
                     // Then delete the list itself
                     listaBo.delete(item['pk_lista']).then((deleted) {
                       if (deleted) {
@@ -71,16 +75,15 @@ class _HomeListState extends State<HomeList> {
                     });
                   });
 
-                break;
+                  break;
                 case ListAction.clone:
-                  
                   listaBo.insert({
-                    'name': item['name']+' (cópia)',
+                    'name': item['name'] + ' (cópia)',
                     'created': DateTime.now().toString()
                   }).then((int newId) {
-
-                    itemBo.itemsByList(item['pk_lista']).then((List<Map> listItems) async {
-
+                    itemBo
+                        .itemsByList(item['pk_lista'])
+                        .then((List<Map> listItems) async {
                       for (Map listItem in listItems) {
                         await itemBo.insert({
                           'fk_lista': newId,
@@ -96,7 +99,7 @@ class _HomeListState extends State<HomeList> {
                     });
                   });
 
-                break;
+                  break;
               }
             },
             itemBuilder: (BuildContext context) {
@@ -119,14 +122,14 @@ class _HomeListState extends State<HomeList> {
                   value: ListAction.clone,
                   child: Row(children: <Widget>[
                     Icon(Icons.content_copy, color: Layout.secondary()),
-                    Text('Duplicar', style: TextStyle(color: Layout.secondary()))
+                    Text('Duplicar',
+                        style: TextStyle(color: Layout.secondary()))
                   ]),
                 )
               ];
             },
           ),
           onTap: () {
-
             // Aponta na lista qual esta selecionada
             ItemsPage.pkList = item['pk_lista'];
             ItemsPage.nameList = item['name'];
@@ -140,65 +143,56 @@ class _HomeListState extends State<HomeList> {
   }
 
   void showEditDialog(BuildContext context, Map item) {
-    
     showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext ctx) {
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext ctx) {
+          TextEditingController _cEdit = TextEditingController();
+          _cEdit.text = item['name'];
 
-        TextEditingController _cEdit = TextEditingController();
-        _cEdit.text = item['name'];
+          final input = TextFormField(
+            controller: _cEdit,
+            autofocus: true,
+            decoration: InputDecoration(
+                hintText: 'Nome',
+                contentPadding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+                border:
+                    OutlineInputBorder(borderRadius: BorderRadius.circular(5))),
+          );
 
-        final input = TextFormField(
-          controller: _cEdit,
-          autofocus: true,
-          decoration: InputDecoration(
-            hintText: 'Nome',
-            contentPadding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(5)
-            )
-          ),
-        );
-
-        return AlertDialog(
-          title: Text('Editar'),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                input
-              ],
+          return AlertDialog(
+            title: Text('Editar'),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[input],
+              ),
             ),
-          ),
-          actions: <Widget>[
-            RaisedButton(
-              color: Layout.dark(0.2),
-              child: Text('Cancelar', style: TextStyle(color: Layout.light())),
-              onPressed: () {
-                Navigator.of(ctx).pop();
-              },
-            ),
-            RaisedButton(
-              color: Layout.primary(),
-              child: Text('Salvar', style: TextStyle(color: Layout.light())),
-              onPressed: () {
-                ModelLista listaBo = ModelLista();
-
-                listaBo.update({
-                  'name': _cEdit.text,
-                  'created': DateTime.now().toString()
-                }, item['pk_lista']).then((saved) {
-
+            actions: <Widget>[
+              RaisedButton(
+                color: Layout.dark(0.2),
+                child:
+                    Text('Cancelar', style: TextStyle(color: Layout.light())),
+                onPressed: () {
                   Navigator.of(ctx).pop();
-                  Navigator.of(ctx).pushReplacementNamed(HomePage.tag);
+                },
+              ),
+              RaisedButton(
+                color: Layout.primary(),
+                child: Text('Salvar', style: TextStyle(color: Layout.light())),
+                onPressed: () {
+                  ModelLista listaBo = ModelLista();
 
-                });
-              },
-            )
-          ],
-        );
-
-      }
-    );
+                  listaBo.update({
+                    'name': _cEdit.text,
+                    'created': DateTime.now().toString()
+                  }, item['pk_lista']).then((saved) {
+                    Navigator.of(ctx).pop();
+                    Navigator.of(ctx).pushReplacementNamed(HomePage.tag);
+                  });
+                },
+              )
+            ],
+          );
+        });
   }
 }

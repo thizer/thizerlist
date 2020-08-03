@@ -1,6 +1,8 @@
+import 'dart:developer';
+
 import 'package:intl/intl.dart';
 
-Map<String, int> unity = Map.from({ 'Un': 0, 'Kg': 3 });
+Map<String, int> unity = Map.from({'Un': 0, 'Kg': 3});
 
 String dbName = 'thizerlist.db';
 int dbVersion = 1;
@@ -39,7 +41,19 @@ double currencyToFloat(String value) {
 }
 
 String doubleToCurrency(double value) {
-  NumberFormat nf = NumberFormat.compactCurrency(locale: 'pt_BR', symbol: 'R\$');
-  return nf.format(value);
-}
+  // NumberFormat nf = NumberFormat.compactCurrency(
+  //   locale: 'pt_BR',
+  //   symbol: 'R\$',
+  //   decimalDigits: 2,
+  // );
 
+  // inspect(nf.format(value));
+
+  // return nf.format(value);
+
+  String result = 'R\$ ';
+
+  result += value.toStringAsFixed(2).replaceFirst('.', ',');
+
+  return result;
+}

@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:thizerlist/blocs/home_list_bloc.dart';
 import 'package:thizerlist/layout.dart';
-import 'dart:async';
-
-import 'package:thizerlist/models/Lista.dart';
 import '../widgets/HomeList.dart';
 
 class HomePage extends StatefulWidget {
-
   static String tag = 'home-page';
 
   @override
@@ -16,7 +13,6 @@ class HomePage extends StatefulWidget {
 }
 
 class HomePageState extends State<HomePage> {
-
   final HomeListBloc listaBloc = HomeListBloc();
 
   @override
@@ -27,7 +23,6 @@ class HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-
     final content = StreamBuilder<List<Map>>(
       stream: listaBloc.lists,
       builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -42,34 +37,13 @@ class HomePageState extends State<HomePage> {
             } else {
               return HomeList(
                 items: snapshot.data,
-                listaBloc: this.listaBloc
+                listaBloc: this.listaBloc,
               );
             }
         }
-      }
+      },
     );
 
     return Layout.getContent(context, content);
-  }
-}
-
-class HomeListBloc {
-
-  HomeListBloc() {
-    getList();
-  }
-
-  ModelLista listaBo = ModelLista();
-
-  final _controller = StreamController<List<Map>>.broadcast();
-
-  get lists => _controller.stream;
-
-  dispose() {
-    _controller.close();
-  }
-
-  getList() async {
-    _controller.sink.add(await listaBo.list());
   }
 }
