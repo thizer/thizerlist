@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'models/Lista.dart';
+import 'package:intl/intl.dart';
 
-import 'pages/home.dart';
+import 'models/Lista.dart';
 import 'pages/about.dart';
+import 'pages/home.dart';
 import 'pages/settings.dart';
 
 class Layout {
@@ -70,22 +71,16 @@ class Layout {
     GlobalKey<FormState> _formKey = GlobalKey<FormState>();
     TextEditingController _c = TextEditingController();
 
-    final meses = [
-      'Janeiro',
-      'Fevereiro',
-      'Março',
-      'Abril',
-      'Maio',
-      'Junho',
-      'Julho',
-      'Agosto',
-      'Setembro',
-      'Outubro',
-      'Novembro',
-      'Dezembro',
-    ];
+    // Define o locale e a formatacao de data
+    var locale = Localizations.localeOf(context);
+    var df = DateFormat('MMMM', locale.toString());
 
-    _c.text = "${DateTime.now().day} de ${meses[DateTime.now().month - 1]}";
+    // Pega o mes por extenso
+    var mes = df.format(DateTime.now());
+    mes = mes[0].toUpperCase() + mes.substring(1);
+
+    // Input inicia com o texto da data de hoje
+    _c.text = "${DateTime.now().day} de $mes";
 
     if (pages[currItem] == HomePage.tag) {
       items.add(GestureDetector(
@@ -125,27 +120,21 @@ class Layout {
                   actions: <Widget>[
                     RaisedButton(
                       color: Layout.dark(0.2),
-                      child: Text('Cancelar',
-                          style: TextStyle(color: Layout.light())),
+                      child: Text('Cancelar', style: TextStyle(color: Layout.light())),
                       onPressed: () {
                         Navigator.of(ctx).pop();
                       },
                     ),
                     RaisedButton(
                       color: primary(),
-                      child: Text('Adicionar',
-                          style: TextStyle(color: Layout.light())),
+                      child: Text('Adicionar', style: TextStyle(color: Layout.light())),
                       onPressed: () {
                         if (_formKey.currentState.validate()) {
                           ModelLista listaBo = ModelLista();
 
-                          listaBo.insert({
-                            'name': _c.text,
-                            'created': DateTime.now().toString()
-                          }).then((newRowId) {
+                          listaBo.insert({'name': _c.text, 'created': DateTime.now().toString()}).then((newRowId) {
                             Navigator.of(ctx).pop();
-                            Navigator.of(ctx)
-                                .pushReplacementNamed(HomePage.tag);
+                            Navigator.of(ctx).pushReplacementNamed(HomePage.tag);
                           });
                         }
                       },
@@ -163,31 +152,19 @@ class Layout {
     return items;
   }
 
-  static Color primary([double opacity = 1]) =>
-      Colors.red[700].withOpacity(opacity);
-  static Color primaryDark([double opacity = 1]) =>
-      Color(0xff9a0007).withOpacity(opacity);
-  static Color primaryLight([double opacity = 1]) =>
-      Color(0xffff6659).withOpacity(opacity);
+  static Color primary([double opacity = 1]) => Colors.red[700].withOpacity(opacity);
+  static Color primaryDark([double opacity = 1]) => Color(0xff9a0007).withOpacity(opacity);
+  static Color primaryLight([double opacity = 1]) => Color(0xffff6659).withOpacity(opacity);
 
-  static Color secondary([double opacity = 1]) =>
-      Colors.teal[700].withOpacity(opacity);
-  static Color secondaryDark([double opacity = 1]) =>
-      Color(0xff004c40).withOpacity(opacity);
-  static Color secondaryLight([double opacity = 1]) =>
-      Color(0xff48a999).withOpacity(opacity);
+  static Color secondary([double opacity = 1]) => Colors.teal[700].withOpacity(opacity);
+  static Color secondaryDark([double opacity = 1]) => Color(0xff004c40).withOpacity(opacity);
+  static Color secondaryLight([double opacity = 1]) => Color(0xff48a999).withOpacity(opacity);
 
-  static Color light([double opacity = 1]) =>
-      Color.fromRGBO(242, 234, 228, opacity);
-  static Color dark([double opacity = 1]) =>
-      Color.fromRGBO(51, 51, 51, opacity);
+  static Color light([double opacity = 1]) => Color.fromRGBO(242, 234, 228, opacity);
+  static Color dark([double opacity = 1]) => Color.fromRGBO(51, 51, 51, opacity);
 
-  static Color danger([double opacity = 1]) =>
-      Color.fromRGBO(217, 74, 74, opacity);
-  static Color success([double opacity = 1]) =>
-      Color.fromRGBO(5, 100, 50, opacity);
-  static Color info([double opacity = 1]) =>
-      Color.fromRGBO(100, 150, 255, opacity);
-  static Color warning([double opacity = 1]) =>
-      Color.fromRGBO(166, 134, 0, opacity);
+  static Color danger([double opacity = 1]) => Color.fromRGBO(217, 74, 74, opacity);
+  static Color success([double opacity = 1]) => Color.fromRGBO(5, 100, 50, opacity);
+  static Color info([double opacity = 1]) => Color.fromRGBO(100, 150, 255, opacity);
+  static Color warning([double opacity = 1]) => Color.fromRGBO(166, 134, 0, opacity);
 }

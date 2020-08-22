@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'layout.dart';
 import 'pages/home.dart';
@@ -7,6 +8,10 @@ import 'pages/settings.dart';
 import 'pages/items.dart';
 import 'pages/item-add.dart';
 import 'pages/item-edit.dart';
+
+// i18n - internacionalization
+// l10n -
+// a11y -
 
 void main() => runApp(ThizerList());
 
@@ -41,6 +46,15 @@ class ThizerList extends StatelessWidget {
           bodyText2: TextStyle(fontSize: 14),
         ),
       ),
+      localizationsDelegates: [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: [
+        Locale('pt', 'BR'),
+        Locale('en'),
+      ],
       home: HomePage(),
       routes: routes,
     );
