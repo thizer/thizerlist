@@ -9,10 +9,6 @@ import 'pages/items.dart';
 import 'pages/item-add.dart';
 import 'pages/item-edit.dart';
 
-// i18n - internacionalization
-// l10n -
-// a11y -
-
 void main() => runApp(ThizerList());
 
 class ThizerList extends StatelessWidget {
