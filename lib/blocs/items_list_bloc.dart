@@ -14,11 +14,25 @@ class ItemsListBloc {
 
   get lists => _controller.stream;
 
-  dispose() {
-    _controller.close();
+  ItemsListOrderBy orderBy = ItemsListOrderBy.alphaASC;
+
+  ItemsListFilterBy filterBy = ItemsListFilterBy.all;
+
+  reorder() {
+    orderBy = (orderBy == ItemsListOrderBy.alphaASC) ? ItemsListOrderBy.alphaDESC : ItemsListOrderBy.alphaASC;
+    getList();
+  }
+
+  toggleFilter(ItemsListFilterBy newVal) {
+    filterBy = (filterBy == newVal) ? ItemsListFilterBy.all : newVal;
+    getList();
   }
 
   getList() async {
-    _controller.sink.add(await itemBo.itemsByList(ItemsPage.pkList));
+    _controller.sink.add(await itemBo.itemsByList(ItemsPage.pkList, orderBy, filterBy));
+  }
+
+  dispose() {
+    _controller.close();
   }
 }

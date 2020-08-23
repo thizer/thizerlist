@@ -1,15 +1,18 @@
 import 'dart:async';
 
-import 'AbstractModel.dart';
-import 'package:thizerlist/application.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:thizerlist/application.dart';
+
+import 'AbstractModel.dart';
+
+enum ItemsListOrderBy { alphaASC, alphaDESC }
+enum ItemsListFilterBy { checked, unchecked, all }
 
 class ModelItem extends AbstractModel {
-
   ///
   /// Singleton
   ///
-  
+
   static ModelItem _this;
 
   factory ModelItem() {
@@ -38,11 +41,45 @@ class ModelItem extends AbstractModel {
   }
 
   /// Retorna todos os items da lista
-  /// 
+  ///
   /// [fkLista] ID da lista
-  Future<List<Map>> itemsByList(int fkLista) async {
+  Future<List<Map>> itemsByList(
+    int fkLista,
+    ItemsListOrderBy orderBy,
+    ItemsListFilterBy filterBy,
+  ) async {
     Database db = await this.getDb();
-    return db.rawQuery('SELECT * FROM item WHERE fk_lista = $fkLista ORDER BY name ASC, created DESC');
+
+    String query = '''
+      SELECT
+        i.*,
+        (
+          SELECT COUNT(1)
+          FROM item i2
+          WHERE i2.fk_lista = $fkLista
+          LIMIT 1
+        ) as qtd_total,
+        (
+          SELECT COUNT(1)
+          FROM item i2
+          WHERE i2.fk_lista = $fkLista AND i2.checked = 1
+          LIMIT 1
+        ) as qtd_checked,
+        (
+          SELECT COUNT(1)
+          FROM item i2
+          WHERE i2.fk_lista = $fkLista AND i2.checked = 0
+          LIMIT 1
+        ) as qtd_unchecked
+      FROM item i
+      WHERE
+        i.fk_lista = $fkLista
+        ${filterBy == ItemsListFilterBy.checked ? 'AND i.checked = 1' : ''}
+        ${filterBy == ItemsListFilterBy.unchecked ? 'AND i.checked = 0' : ''}
+      ORDER BY LOWER(i.name) ${(orderBy == ItemsListOrderBy.alphaASC) ? 'ASC' : 'DESC'}
+    ''';
+
+    return db.rawQuery(query);
   }
 
   @override
@@ -67,7 +104,6 @@ class ModelItem extends AbstractModel {
 
   @override
   Future<bool> update(Map<String, dynamic> values, where) async {
-
     Database db = await this.getDb();
     int rows = await db.update('item', values, where: 'pk_item = ?', whereArgs: [where]);
 
@@ -88,5 +124,4 @@ class ModelItem extends AbstractModel {
     Database db = await this.getDb();
     return await db.delete('item', where: 'fk_lista = ?', whereArgs: [id]);
   }
-
 }

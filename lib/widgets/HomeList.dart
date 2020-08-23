@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
 import 'package:thizerlist/blocs/home_list_bloc.dart';
 import 'package:thizerlist/models/Item.dart';
 
+import '../layout.dart';
+import '../models/Lista.dart';
 import '../pages/home.dart';
 import '../pages/items.dart';
-import '../models/Lista.dart';
-import '../layout.dart';
+
+import 'dart:async';
 
 enum ListAction { edit, clone }
 
@@ -91,23 +92,31 @@ class _HomeListState extends State<HomeList> {
                     showEditDialog(context, item);
                     break;
                   case ListAction.clone:
-                    listaBo.insert({'name': item['name'] + ' (cópia)', 'created': DateTime.now().toString()}).then(
-                        (int newId) {
-                      itemBo.itemsByList(item['pk_lista']).then((List<Map> listItems) async {
-                        for (Map listItem in listItems) {
-                          await itemBo.insert({
-                            'fk_lista': newId,
-                            'name': listItem['name'],
-                            'quantidade': listItem['quantidade'],
-                            'valor': listItem['valor'],
-                            'checked': 0,
-                            'created': DateTime.now().toString()
-                          });
-                        }
 
-                        widget.listaBloc.getList();
+                    // Cria a nova lista
+                    int newId = await listaBo.insert(
+                      {'name': item['name'] + ' (cópia)', 'created': DateTime.now().toString()},
+                    );
+
+                    // Recupera a lista de items dessa lista
+                    List<Map> listItems = await itemBo.itemsByList(
+                      item['pk_lista'],
+                      ItemsListOrderBy.alphaASC,
+                      ItemsListFilterBy.all,
+                    );
+
+                    for (Map listItem in listItems) {
+                      await itemBo.insert({
+                        'fk_lista': newId,
+                        'name': listItem['name'],
+                        'quantidade': listItem['quantidade'],
+                        'valor': listItem['valor'],
+                        'checked': 0,
+                        'created': DateTime.now().toString()
                       });
-                    });
+                    }
+
+                    widget.listaBloc.getList();
 
                     break;
                 }

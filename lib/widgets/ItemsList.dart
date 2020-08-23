@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:thizerlist/application.dart';
 import 'package:thizerlist/blocs/items_list_bloc.dart';
 import 'package:thizerlist/layout.dart';
-import 'package:thizerlist/application.dart';
-import 'package:thizerlist/pages/item-edit.dart';
 import 'package:thizerlist/models/Item.dart';
+import 'package:thizerlist/pages/item-edit.dart';
 
 class ItemsList extends StatefulWidget {
   final List<Map> items;
@@ -27,7 +26,12 @@ class _ItemsListState extends State<ItemsList> {
   Widget build(BuildContext context) {
     // Item default
     if (widget.items.isEmpty) {
-      return ListView(shrinkWrap: true, children: <Widget>[ListTile(title: Text('Nenhum item para exibir ainda'))]);
+      return ListView(
+        shrinkWrap: true,
+        children: <Widget>[
+          ListTile(title: Text('Nenhum item para exibir ainda')),
+        ],
+      );
     }
 
     // The list after filter apply
@@ -48,7 +52,12 @@ class _ItemsListState extends State<ItemsList> {
 
     // Empty after filters
     if (filteredList.isEmpty) {
-      return ListView(shrinkWrap: true, children: <Widget>[ListTile(title: Text('Nenhum item encontrado...'))]);
+      return ListView(
+        shrinkWrap: true,
+        children: <Widget>[
+          ListTile(title: Text('Nenhum item encontrado...')),
+        ],
+      );
     }
 
     // Instancia model
@@ -112,7 +121,7 @@ class _ItemsListState extends State<ItemsList> {
                             Navigator.of(ctx).pop();
                             widget.itemsListBloc.getList();
                           },
-                        )
+                        ),
                       ],
                     );
                   },
