@@ -22,134 +22,163 @@ class Layout {
     content, [
     bool showbottom = true,
   ]) {
-    BottomNavigationBar bottomNavBar = BottomNavigationBar(
-      currentIndex: currItem,
-      //fixedColor: primary(),
-      items: <BottomNavigationBarItem>[
-        BottomNavigationBarItem(
-          icon: Icon(Icons.home),
-          title: Text('Home'),
+    var demoBar = BottomAppBar(
+      color: Colors.grey,
+      notchMargin: 5.0,
+      shape: CircularNotchedRectangle(),
+      child: IconTheme(
+        data: IconThemeData(color: Theme.of(context).colorScheme.onPrimary),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(10),
+              child: InkWell(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.home,
+                      color: currItem == 0 ? Layout.primary() : Layout.light(),
+                    ),
+                    Text(
+                      'Home',
+                      style: TextStyle(color: currItem == 0 ? Layout.primary() : Layout.light()),
+                    ),
+                  ],
+                ),
+                onTap: () {
+                  currItem = 0;
+                  Navigator.of(context).pushReplacementNamed(pages[0]);
+                },
+              ),
+            ),
+            // const Spacer(),
+            Padding(
+              padding: const EdgeInsets.all(10),
+              child: InkWell(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.question_answer,
+                      color: currItem == 1 ? Layout.primary() : Layout.light(),
+                    ),
+                    Text(
+                      'Sobre',
+                      style: TextStyle(color: currItem == 1 ? Layout.primary() : Layout.light()),
+                    ),
+                  ],
+                ),
+                onTap: () {
+                  currItem = 1;
+                  Navigator.of(context).pushReplacementNamed(pages[1]);
+                },
+              ),
+            ),
+          ],
         ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.question_answer),
-          title: Text('Sobre'),
-        ),
-        // BottomNavigationBarItem(
-        //   icon: Icon(Icons.settings),
-        //   title: Text('Configurações'),
-        // )
-      ],
-      onTap: (int i) {
-        currItem = i;
-        Navigator.of(context).pushReplacementNamed(pages[i]);
-      },
+      ),
     );
 
     return SingleChildScrollView(
-        child: Container(
-            height: MediaQuery.of(context).size.height,
-            child: Scaffold(
-              appBar: AppBar(
-                title: Text('ThizerList'),
-                actions: showbottom ? _getActions(context) : [],
-              ),
-              bottomNavigationBar: showbottom ? bottomNavBar : null,
-              body: new Builder(
-                builder: (BuildContext context) {
-                  // Store the scaffold context to show snackbars
-                  Layout.scaffoldContext = context;
+      child: Container(
+        height: MediaQuery.of(context).size.height,
+        child: Scaffold(
+          appBar: AppBar(title: Text('ThizerList')),
+          // bottomNavigationBar: showbottom ? bottomNavBar : null,
+          bottomNavigationBar: showbottom ? demoBar : null,
+          body: new Builder(
+            builder: (BuildContext context) {
+              // Store the scaffold context to show snackbars
+              Layout.scaffoldContext = context;
 
-                  return content;
-                },
-              ),
-            )));
-  }
+              return content;
+            },
+          ),
+          floatingActionButton: !showbottom || pages[currItem] != HomePage.tag
+              ? null
+              : FloatingActionButton(
+                  heroTag: 'addlist',
+                  child: Icon(Icons.add),
+                  elevation: 0.0,
+                  onPressed: () {
+                    GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+                    TextEditingController _c = TextEditingController();
 
-  static List<Widget> _getActions(BuildContext context) {
-    List<Widget> items = List<Widget>();
+                    // Define o locale e a formatacao de data
+                    var locale = Localizations.localeOf(context);
+                    var df = DateFormat('MMMM', locale.toString());
 
-    GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-    TextEditingController _c = TextEditingController();
+                    // Pega o mes por extenso
+                    var mes = df.format(DateTime.now());
+                    mes = mes[0].toUpperCase() + mes.substring(1);
 
-    // Define o locale e a formatacao de data
-    var locale = Localizations.localeOf(context);
-    var df = DateFormat('MMMM', locale.toString());
+                    // Input inicia com o texto da data de hoje
+                    _c.text = "${DateTime.now().day} de $mes";
 
-    // Pega o mes por extenso
-    var mes = df.format(DateTime.now());
-    mes = mes[0].toUpperCase() + mes.substring(1);
+                    showDialog(
+                      context: context,
+                      barrierDismissible: false,
+                      builder: (BuildContext ctx) {
+                        final input = Form(
+                          key: _formKey,
+                          child: TextFormField(
+                            controller: _c,
+                            autofocus: true,
+                            decoration: InputDecoration(
+                              hintText: 'Nome',
+                              contentPadding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                            ),
+                            validator: (value) {
+                              if (value.isEmpty) {
+                                return 'Este campo não pode ficar vazio';
+                              }
+                              return null;
+                            },
+                          ),
+                        );
 
-    // Input inicia com o texto da data de hoje
-    _c.text = "${DateTime.now().day} de $mes";
+                        return AlertDialog(
+                          title: Text('Nova Lista'),
+                          content: SingleChildScrollView(
+                            child: ListBody(
+                              children: <Widget>[input],
+                            ),
+                          ),
+                          actions: <Widget>[
+                            RaisedButton(
+                              color: Layout.dark(0.2),
+                              child: Text('Cancelar', style: TextStyle(color: Layout.light())),
+                              onPressed: () => Navigator.of(ctx).pop(),
+                            ),
+                            RaisedButton(
+                              color: primary(),
+                              child: Text('Adicionar', style: TextStyle(color: Layout.light())),
+                              onPressed: () async {
+                                if (_formKey.currentState.validate()) {
+                                  ModelLista listaBo = ModelLista();
 
-    if (pages[currItem] == HomePage.tag) {
-      items.add(GestureDetector(
-        onTap: () {
-          showDialog(
-              context: context,
-              barrierDismissible: false,
-              builder: (BuildContext ctx) {
-                final input = Form(
-                  key: _formKey,
-                  child: TextFormField(
-                    controller: _c,
-                    autofocus: true,
-                    decoration: InputDecoration(
-                      hintText: 'Nome',
-                      contentPadding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                    ),
-                    validator: (value) {
-                      if (value.isEmpty) {
-                        return 'Este campo não pode ficar vazio';
-                      }
-                      return null;
-                    },
-                  ),
-                );
+                                  await listaBo.insert({'name': _c.text, 'created': DateTime.now().toString()});
 
-                return AlertDialog(
-                  title: Text('Nova Lista'),
-                  content: SingleChildScrollView(
-                    child: ListBody(
-                      children: <Widget>[input],
-                    ),
-                  ),
-                  actions: <Widget>[
-                    RaisedButton(
-                      color: Layout.dark(0.2),
-                      child: Text('Cancelar', style: TextStyle(color: Layout.light())),
-                      onPressed: () {
-                        Navigator.of(ctx).pop();
+                                  Navigator.of(ctx).pop();
+                                  Navigator.of(ctx).pushReplacementNamed(HomePage.tag);
+                                }
+                              },
+                            )
+                          ],
+                        );
                       },
-                    ),
-                    RaisedButton(
-                      color: primary(),
-                      child: Text('Adicionar', style: TextStyle(color: Layout.light())),
-                      onPressed: () {
-                        if (_formKey.currentState.validate()) {
-                          ModelLista listaBo = ModelLista();
-
-                          listaBo.insert({'name': _c.text, 'created': DateTime.now().toString()}).then((newRowId) {
-                            Navigator.of(ctx).pop();
-                            Navigator.of(ctx).pushReplacementNamed(HomePage.tag);
-                          });
-                        }
-                      },
-                    )
-                  ],
-                );
-              });
-        },
-        child: Icon(Icons.add),
-      ));
-    }
-
-    items.add(Padding(padding: EdgeInsets.only(right: 20)));
-
-    return items;
+                    );
+                  },
+                ),
+          floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+        ),
+      ),
+    );
   }
 
   static Color primary([double opacity = 1]) => Colors.red[700].withOpacity(opacity);
