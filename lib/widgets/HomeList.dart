@@ -50,7 +50,7 @@ class _HomeListState extends State<HomeList> {
         DateTime created = DateTime.tryParse(item['created']);
 
         return Dismissible(
-          key: Key(index.toString()),
+          key: Key(item['created'].toString()),
           background: Container(
             color: Colors.red,
             padding: const EdgeInsets.only(right: 20),

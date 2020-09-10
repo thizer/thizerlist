@@ -171,6 +171,7 @@ class _ItemsPageState extends State<ItemsPage> {
               bool isClosed = (subTotal == vlrTotal);
 
               TextStyle secDarkText = TextStyle(color: Layout.secondaryDark(), fontWeight: FontWeight.bold);
+              TextStyle secDarkTextSelected = TextStyle(color: Layout.info(), fontWeight: FontWeight.bold);
 
               return Container(
                 color: Color.fromRGBO(0, 0, 0, 0.04),
@@ -187,22 +188,54 @@ class _ItemsPageState extends State<ItemsPage> {
                           InkWell(
                             onTap: () => itemsListBloc.reorder(),
                             child: Column(children: <Widget>[
-                              Text('Items', style: secDarkText),
+                              Row(
+                                children: <Widget>[
+                                  Text('Items', style: secDarkText),
+                                  Icon(
+                                    (itemsListBloc.orderBy == ItemsListOrderBy.alphaASC)
+                                        ? Icons.arrow_drop_down
+                                        : Icons.arrow_drop_up,
+                                    color: Layout.secondaryDark(),
+                                  ),
+                                ],
+                              ),
                               Text(qtdTotal.toString(), textScaleFactor: 1.2, style: secDarkText)
                             ]),
                           ),
                           InkWell(
                             onTap: () => itemsListBloc.toggleFilter(ItemsListFilterBy.checked),
                             child: Column(children: <Widget>[
-                              Text('Carrinho', style: secDarkText),
-                              Text(qtdChecked.toString(), textScaleFactor: 1.2, style: secDarkText)
+                              Text(
+                                'Carrinho',
+                                style: (itemsListBloc.filterBy == ItemsListFilterBy.checked)
+                                    ? secDarkTextSelected
+                                    : secDarkText,
+                              ),
+                              Text(
+                                qtdChecked.toString(),
+                                textScaleFactor: 1.2,
+                                style: (itemsListBloc.filterBy == ItemsListFilterBy.checked)
+                                    ? secDarkTextSelected
+                                    : secDarkText,
+                              )
                             ]),
                           ),
                           InkWell(
                             onTap: () => itemsListBloc.toggleFilter(ItemsListFilterBy.unchecked),
                             child: Column(children: <Widget>[
-                              Text('Faltando', style: secDarkText),
-                              Text(qtdUnchecked.toString(), textScaleFactor: 1.2, style: secDarkText)
+                              Text(
+                                'Faltando',
+                                style: (itemsListBloc.filterBy == ItemsListFilterBy.unchecked)
+                                    ? secDarkTextSelected
+                                    : secDarkText,
+                              ),
+                              Text(
+                                qtdUnchecked.toString(),
+                                textScaleFactor: 1.2,
+                                style: (itemsListBloc.filterBy == ItemsListFilterBy.unchecked)
+                                    ? secDarkTextSelected
+                                    : secDarkText,
+                              )
                             ]),
                           ),
                         ],
